@@ -11,3 +11,9 @@
 
 ### Some basic info for frontend:
 1. There is a camera screen and a display screen (I think you all know this , we need to add a few frontend features)
+
+### Frontend
+1. Home screen which displays most popular recipes, take picture.
+2. Recipe screen which displays a picture of dish and lists ingredients and recipes.
+3. Camera screen to take picture.
+4. Display screen to display the identified ingredients and recommended recipes.
