@@ -14,6 +14,7 @@ export class LandingComponent extends Component {
     render() {
         // const {Data} = this.props.route.params.data
         // console.log(this.props.route.params.data)
+        var popularRecipes = this.getPopularRecipeImages();
         return (
             <View style={StyleSheet.container}>
                 <View style={StyleSheet.heading}>
@@ -21,18 +22,13 @@ export class LandingComponent extends Component {
 
                     {/* This is placeholder images for top 3 dishes  */}
                     <View style={{ flexDirection: "row", paddingLeft: 30, paddingBottom: 20 }}>
-                        <TouchableOpacity style={{ flex: 1 }} activeOpacity={.5} onPress={() => { this.props.navigation.navigate('Recipe') }}>
-                            <Image style={{ width: 100, height: 100 }} source={require('../assets/picture1.jpg')} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flex: 1 }} activeOpacity={.5} onPress={() => { this.props.navigation.navigate('Recipe') }}>
-                            <Image style={{ width: 100, height: 100 }} source={require('../assets/picture2.jpg')} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flex: 1 }} activeOpacity={.5} onPress={() => { this.props.navigation.navigate('Recipe') }}>
-                            <Image style={{ width: 100, height: 100 }} source={require('../assets/picture3.jpg')} />
-                        </TouchableOpacity>
-
+                    {
+                        popularRecipes.map((item, key) => (
+                            <TouchableOpacity key={key} style={{ flex: 1 }} activeOpacity={.5} onPress={() => { this.props.navigation.navigate('Recipe') }}>
+                                    <Image style={{ width: 100, height: 100 }} source={item.filePath} />
+                            </TouchableOpacity>
+                        ))
+                    }
                     </View>
                 </View>
 
@@ -46,6 +42,30 @@ export class LandingComponent extends Component {
                 <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
             </View>
         )
+    }
+
+    getPopularRecipeImages = () => {
+        // var popularImageData = [];
+
+        // get from API
+        // var popularImageNames = ['picture1.jpg', 'picture2.jpg', 'picture3.jpg'];
+
+        // get from API
+        // var popularImageUri = '../assets/';
+
+        // to update the image source dynamically, as require() method takes only static values
+        // popularImageNames.forEach(function(key){
+        //     popularImageData.push(
+        //         {uri: popularImageUri+key}
+        //     );
+        // });
+        // return popularImageData;
+        var popularImageData = [
+            {filePath: require('../assets/picture1.jpg')},
+            {filePath: require('../assets/picture2.jpg')},
+            {filePath: require('../assets/picture3.jpg')}
+        ];
+        return popularImageData;
     }
 }
 
