@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button, Image, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, Button, Image, KeyboardAvoidingView, ToastAndroid } from 'react-native';
 import Constants from 'expo-constants';
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
@@ -33,32 +33,13 @@ export class LoginComponent extends Component {
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 flag = false;
-                console.log("Login: " + errorMessage)
+                ToastAndroid.show(errorMessage, ToastAndroid.SHORT)
             })
             .then(function (result) {
                 if (flag) {
                     // navigation.navigate("Landing")
                     navigation.dispatch(StackActions.replace('Landing'))
-                    console.log("Login Success!")
-                }
-            })
-    }
-
-    handleSignup = (navigation, email, password) => {
-        var flag = true;
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-            .catch(function (error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                flag = false;
-                console.log("Sign UP: " + errorMessage)
-            })
-            .then(function (result) {
-                if (flag) {
-                    // navigation.navigate("Landing")
-                    navigation.dispatch(StackActions.replace('Landing'))
-                    console.log("Sign Up Success!")
+                    ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
                 }
             })
     }
@@ -83,7 +64,7 @@ export class LoginComponent extends Component {
                     <View style={{ alignSelf: "center" }}>
                         <Text>New User? Click Sign Up</Text>
                         <View style={styles.loginbtn} >
-                            <Button title="Sign Up" onPress={this.handleSignup.bind(this, this.props.navigation, this.state.email, this.state.password)} />
+                            <Button title="Sign Up" onPress={() => { this.props.navigation.navigate('Signup') }} />
                         </View>
                     </View>
                 </View>
