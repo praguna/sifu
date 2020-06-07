@@ -58,8 +58,7 @@ def recognised_ingredients(pred):
         if x >= 0.90: result.append(labels[i])
     return result
 
-def fetch_recipes(conn_string):
-    client = pymongo.MongoClient(conn_string)
+def fetch_recipes(client):
     db = client["food"]
     recipe_collection = db["south_Indian_recipes"]
     return list(recipe_collection.find())

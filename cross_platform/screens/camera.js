@@ -75,7 +75,7 @@ export class CameraComponent extends Component {
         .takePictureAsync({ base64: true })
         .then((data) => {
           //sending image
-          fetch(env.server, {
+          fetch(env.server+"predict", {
             method: "POST",
             headers: {
               Accept: "application/json",

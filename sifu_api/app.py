@@ -11,6 +11,8 @@ from utils.prediction_utils import *
 import tensorflow.compat.v1 as tf
 from utils.config import *
 import pandas as pd
+import numpy as np
+from pymongo import MongoClient 
 
 # creating the flask app 
 app = Flask(__name__) 
@@ -25,8 +27,10 @@ graph1,graph2 = None,None
 recipes = None
 recommendation_data = None
 user,item,output_layer = None,None,None
+mongoClient = None
 
 def load_init():
+    initializeMongoClient()
     global ir_model, model_src, reco_session, ir_session, graph1, graph2, recommendation_data, reco_model
     global user,item,output_layer
     model_src = Models()
@@ -45,6 +49,10 @@ def load_init():
             reco_path =  os.path.join(os.getcwd(),"saved_models","recommendation","NeuMF\\")
             saver.restore(reco_session , reco_path)  
 
+#Use only one instance of MongoClient throughout application
+def initializeMongoClient():
+    global mongoClient
+    mongoClient = pymongo.MongoClient(atlas_connection_string)
 
 def predict(image):
     global ir_model, model_src, ir_session
@@ -60,7 +68,7 @@ def recommend(ingredients,user_id):
             data_path = os.path.join(os.getcwd(), "saved_models", "recommendation", "recomendation_data.pkl")
             recommendation_data =  pd.read_pickle(data_path)   
     if recipes is None:
-       recipes = fetch_recipes(atlas_connection_string)
+       recipes = fetch_recipes(mongoClient)
     with graph2.as_default():
         with reco_session.as_default():
             items = get_items(recommendation_data , recipes , user_id , ingredients)
@@ -87,8 +95,13 @@ class Application(Resource):
         data = request.get_json()
         converted_image = self.convert_to_image(data['data'])
         pred = predict(converted_image)
-        res = recommend(pred, data['user_id'])
-        return jsonify(res)
+        res = recommend(pred, data['uid'])
+        response = {
+            "recipe": [ x[1] for x in res ],
+            "value" : [ round(np.float64(x[0]),2) for x in res ]
+        }
+        print(response)
+        return jsonify(response)
 
     def convert_to_image(self,data):
         byte_array = bytearray(base64.b64decode(data))
