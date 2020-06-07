@@ -1,5 +1,6 @@
 export const env = {
-    server:"http://192.168.1.105:5000/"
+    // server:"http://192.168.1.105:5000/" //vishnu or nitish
+    // server : "http://192.168.42.2:5000/"  //praguna
 }
 /*
 // nostalgia

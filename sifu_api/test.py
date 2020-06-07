@@ -14,7 +14,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertGreater(len(pred) , 0)
     
     def test_recipe_recommendation(self):
-        # pred = app.recommend(None,12)
+        pred = app.recommend(None,12)
         self.assertFalse(False) #tautology !
     
     def test_predict_and_recommend(self):
