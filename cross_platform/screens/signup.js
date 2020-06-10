@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
+import { env } from "../config";
 
 export class SignupComponent extends Component{
     state = {
@@ -49,14 +50,14 @@ export class SignupComponent extends Component{
                     <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Password" onChangeText={this.handlePassword} />
                     <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Confirm Password" onChangeText={this.handleConfirmPassword} />
                     <View style={styles.submitbtn} >
-                        <Button title="Submit" onPress={this.handleSignup.bind(this, this.props.navigation)} />
+                        <Button title="Submit" onPress={this.handleSignup.bind(this, this.props.navigation, this.state.email, this.state.username)} />
                     </View>
                 </View>
             </KeyboardAvoidingView>
         )
     }
 
-    handleSignup = (navigation) => {
+    handleSignup = (navigation, email, username) => {
         var flag = true;
         try {
 
@@ -71,12 +72,28 @@ export class SignupComponent extends Component{
                 var errorMessage = error.message;
                 flag = false;
                 ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+            }).then((result) => {});
+            
+            fetch(env.server+"registerUser", {
+                method: "POST",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "username": username,
+                    "email": email
+                }),
             })
-            .then(function (result) {
+            .then((response) => response.json())
+            .then((json) => {
+                console.log(json.message);
+            })
+            .catch((error) => console.log(error))
+            .then(function () {
                 if (flag) {
-                    navigation.dispatch(StackActions.replace('Landing'))
+                    navigation.dispatch(StackActions.replace('Landing'));
                     ToastAndroid.show("Sign Up Success!", ToastAndroid.SHORT);
-                    //call an api here to register user to MONGODB
                 }
             })
         } catch (error){
