@@ -18,17 +18,40 @@ export class LandingComponent extends Component {
         return (
             <View style={StyleSheet.container}>
                 <View style={StyleSheet.heading}>
-                    <Text style={{ padding: 20 }}> Explore Our Popular Recipes : </Text>
+                    <View style={styles.new_section}>
+                        <Text> Explore Our Popular Recipes : </Text>
 
-                    {/* This is placeholder images for top 3 dishes  */}
-                    <View style={{ flexDirection: "row", paddingLeft: 30, paddingBottom: 20 }}>
-                    {
-                        popularRecipes.map((item, key) => (
-                            <TouchableOpacity key={key} style={{ flex: 1 }} activeOpacity={.5} onPress={() => { this.props.navigation.navigate('Recipe') }}>
-                                    <Image style={{ width: 100, height: 100 }} source={item.filePath} />
-                            </TouchableOpacity>
-                        ))
-                    }
+                        {/* This is placeholder images for top 3 dishes  */}
+                        <View style={{ flexDirection: "row", marginTop: 10 }}>
+                            {
+                                popularRecipes.map((item, key) => (
+                                    <TouchableOpacity key={key} style={{ flex: 1 }} activeOpacity={.5} onPress={() => {
+                                        this.props.navigation.push('Recipe', {
+                                            imgsrc: item.filePath,
+                                            recipeName: item.recipeName
+                                        })
+
+                                        this.props.navigation.navigate('Recipe')
+                                    }}>
+                                        <Image style={{ width: 100, height: 100 }} source={item.filePath} />
+                                    </TouchableOpacity>
+                                ))
+                            }
+                        </View>
+                    </View>
+
+                    {/* Fetch and Display Breakfast recipes from backend */}
+                    <View style={styles.new_section} >
+                        <Text> Breakfast Recipes: </Text>
+                    </View>
+
+                    {/* Fetch and Display Lunch recipes from backend */}
+                    <View style={styles.new_section} >
+                        <Text> Lunch Recipes: </Text>
+                    </View>
+
+                    <View style={styles.new_section} >
+                        <Text> Dinner Recipes: </Text>
                     </View>
                 </View>
 
@@ -36,7 +59,7 @@ export class LandingComponent extends Component {
                     // data = {this.props.route.params.data}
                     renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
                 />
-                <View style={{ paddingTop: 400 }}>
+                <View style={{ paddingTop: 350 }}>
                     <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera'); }} />
                 </View>
                 <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
@@ -61,9 +84,9 @@ export class LandingComponent extends Component {
         // });
         // return popularImageData;
         var popularImageData = [
-            {filePath: require('../assets/picture1.jpg')},
-            {filePath: require('../assets/picture2.jpg')},
-            {filePath: require('../assets/picture3.jpg')}
+            { filePath: require('../assets/picture1.jpg'), recipeName: "My Recipe 1" },
+            { filePath: require('../assets/picture2.jpg'), recipeName: "My Recipe 2" },
+            { filePath: require('../assets/picture3.jpg'), recipeName: "My Recipe 3" }
         ];
         return popularImageData;
     }
@@ -83,5 +106,8 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize: 1
+    },
+    new_section: {
+        padding: 20,
     }
 });
