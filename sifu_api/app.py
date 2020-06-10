@@ -9,6 +9,7 @@ import numpy as np
 from utils.models import Models
 from utils.prediction_utils import *
 from utils.user_utils import *
+from utils.comment_api import *
 import tensorflow.compat.v1 as tf
 from utils.config import *
 import pandas as pd
@@ -113,6 +114,7 @@ class Application(Resource):
 # adding the defined resources along with their corresponding urls 
 api.add_resource(Application, '/recommendByImage')
 api.add_resource(RegisterUser, '/registerUser') 
+api.add_resource(Comment, '/comment')
   
   
 # driver function 
