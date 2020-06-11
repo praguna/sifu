@@ -93,7 +93,7 @@ class Application(Resource):
     # is a GET request for this resource
     def get(self): 
         """
-        usage : <url>:5000/recommendByImage?uid=<userId>, otherwise returns hello world!
+        url : <url>:5000/recommendByImage?uid=<userId>, otherwise returns hello world!
         """
         userId = request.args.get("uid")
         if userId:
@@ -103,6 +103,13 @@ class Application(Resource):
   
     # Corresponds to POST request 
     def post(self):
+        """
+        url : <url>:5000/recommendByImage  
+        data : {
+            data : base64 encoded image from phone,
+            uid : string formated or an integer number
+        }
+        """
         data = request.get_json()
         converted_image = self.convert_to_image(data['data'])
         pred = predict(converted_image)

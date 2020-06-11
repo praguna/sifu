@@ -17,3 +17,8 @@
 2. Recipe screen which displays a picture of dish and lists ingredients and recipes.
 3. Camera screen to take picture.
 4. Display screen to display the identified ingredients and recommended recipes.
+
+### Information on Api Updates
+1. Use get request <url>:5000/recommendImage?uid=<userId> to get automatic recommendation for a user.
+2. Use get http://localhost:5000/comment?recipe_name=${recipe_name}, for getting comments for the recipe
+3. The rest are post requests, refer to the code api to see details
