@@ -1,25 +1,47 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, FlatList } from "react-native";
 import Constants from "expo-constants";
+import UserRating from "./rating"
+
+const defimg = require('../assets/default.jpg');
 
 export class RecipeComponent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            imgsrc: (this.props.route.params.imgsrc == "") ? defimg : this.props.route.params.imgsrc,
+            recipeName: (this.props.route.params.recipeName == "") ? "Recipe" : this.props.route.params.recipeName
+        }
+    }
     render() {
         // const {Data} = this.props.route.params.data
         // console.log(this.props.route.params.data)
+
         return (
-            <View style={StyleSheet.container}>
-                <View style={StyleSheet.heading}>
+            <ScrollView >
+                <View>
                     {/* Recipe 1 is a placeholder, Change the name dynamically */}
-                    <Text style={{ padding: 20, alignSelf:"center" }}> Recipe </Text>
+                    <Text style={{ fontSize: 20, fontWeight: '400',padding: 20, alignSelf: "center" }}> {this.state.recipeName} </Text>
                     <View style={{ paddingLeft: 20 }}>
                         <Image
                             style={{ width: 375, height: 200 }}
-                            source={require("../assets/picture1.jpg")}
+                            source={this.state.imgsrc}
                         />
                     </View>
-                    <Text style={{ padding: 20 }} >Ingredients, Preparation and Method of cooking: </Text>
+
+                    {/* Fetch following from backend */}
+                    <Text style={styles.recipe_text}> How to Prepare {this.state.recipeName} </Text>
+                    <Text style={styles.recipe_text}> Ingredients: </Text>
+                    <Text style={styles.recipe_text}> Preparation: </Text>
+                    <Text style={styles.recipe_text}> Method: </Text>
                 </View>
-            </View>
+                <View style={{ width: "90%" }} >
+                    <Text style={styles.recipe_text}> Customer Ratings for {this.state.recipeName} </Text>
+
+                    {/* Pass recipe name as params to the CustomerRating component */}
+                    <UserRating />
+                </View>
+            </ScrollView>
         );
     }
 }
@@ -34,4 +56,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         padding: 20,
     },
+    recipe_text: {
+        padding: 20,
+        fontSize: 18,
+        fontWeight: '400'
+    }
+
 });

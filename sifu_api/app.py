@@ -8,6 +8,8 @@ from PIL import Image
 import numpy as np
 from utils.models import Models
 from utils.prediction_utils import *
+from utils.user_utils import *
+from utils.comment_api import *
 import tensorflow.compat.v1 as tf
 from utils.config import *
 import pandas as pd
@@ -100,7 +102,6 @@ class Application(Resource):
             "recipe": [ x[1] for x in res ],
             "value" : [ round(np.float64(x[0]),2) for x in res ]
         }
-        print(response)
         return jsonify(response)
 
     def convert_to_image(self,data):
@@ -111,7 +112,9 @@ class Application(Resource):
     
   
 # adding the defined resources along with their corresponding urls 
-api.add_resource(Application, '/predict') 
+api.add_resource(Application, '/recommendByImage')
+api.add_resource(RegisterUser, '/registerUser') 
+api.add_resource(Comment, '/comment')
   
   
 # driver function 

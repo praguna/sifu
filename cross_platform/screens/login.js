@@ -62,7 +62,7 @@ export class LoginComponent extends Component {
                         <Button title="Login" onPress={this.handleLogin.bind(this, this.props.navigation, this.state.email, this.state.password)} />
                     </View>
                     <View style={{ alignSelf: "center" }}>
-                        <Text>New User? Click Sign Up</Text>
+                        <Text style={{alignSelf: "center"}} >New user? Click Sign Up!</Text>
                         <View style={styles.loginbtn} >
                             <Button title="Sign Up" onPress={() => { this.props.navigation.navigate('Signup') }} />
                         </View>
