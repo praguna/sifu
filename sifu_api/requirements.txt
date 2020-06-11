@@ -1,6 +1,6 @@
 flask
-tensorflow
-keras
+tensorflow==1.14
+keras==2.2.5
 flask_restful
 boto3
 pymongo

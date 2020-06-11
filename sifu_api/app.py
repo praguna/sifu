@@ -10,7 +10,9 @@ from utils.models import Models
 from utils.prediction_utils import *
 from utils.user_utils import *
 from utils.comment_api import *
-import tensorflow.compat.v1 as tf
+# import tensorflow.compat.v1 as tf
+import tensorflow as tf
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from utils.config import *
 import pandas as pd
 import numpy as np
@@ -118,6 +120,8 @@ class Application(Resource):
     def convert_to_image(self,data):
         byte_array = bytearray(base64.b64decode(data))
         image = Image.open(Image.io.BytesIO(byte_array))
+        # image.save("test.jpg")
+        # print("Image saved!!")
         return image
     
     def get_json_response(self,uid,pred=None):
