@@ -23,6 +23,10 @@ class TestStringMethods(unittest.TestCase):
         pred = app.recommend(pred,12)
         self.assertFalse(False) #tautology !
     
+    def recommend_without_image(self):
+        pred = app.recommend(None,12)
+        self.assertFalse(False) #tautology !
+    
 
 if __name__ == '__main__':
     app.load_init()

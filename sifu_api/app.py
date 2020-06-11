@@ -16,6 +16,7 @@ import pandas as pd
 import numpy as np
 from pymongo import MongoClient 
 
+#########################################  Global Initializations and Utilities ##############################
 # creating the flask app 
 app = Flask(__name__) 
 # creating an API object 
@@ -82,6 +83,7 @@ def recommend(ingredients,user_id):
             preds = format_predictions(orginal , items)
             res = response_dictionary(recipes,preds,user_id)
             return preds
+#########################################################################################################
 
 
 class Application(Resource): 
@@ -90,6 +92,13 @@ class Application(Resource):
     # this function is called whenever there 
     # is a GET request for this resource
     def get(self): 
+        """
+        usage : <url>:5000/recommendByImage?uid=<userId>, otherwise returns hello world!
+        """
+        userId = request.args.get("uid")
+        if userId:
+            res = recommend(None, request.args.get("uid"))
+            return self.get_json_response(userId)
         return jsonify({'message': 'hello world'}) 
   
     # Corresponds to POST request 
@@ -97,18 +106,20 @@ class Application(Resource):
         data = request.get_json()
         converted_image = self.convert_to_image(data['data'])
         pred = predict(converted_image)
-        res = recommend(pred, data['uid'])
-        response = {
-            "recipe": [ x[1] for x in res ],
-            "value" : [ round(np.float64(x[0]),2) for x in res ]
-        }
-        return jsonify(response)
+        return self.get_json_response(data['uid'], pred)
 
     def convert_to_image(self,data):
         byte_array = bytearray(base64.b64decode(data))
         image = Image.open(Image.io.BytesIO(byte_array))
         return image
     
+    def get_json_response(self,uid,pred=None):
+        res = recommend(pred, uid)
+        response = {
+            "recipe": [ x[1] for x in res ],
+            "value" : [ round(np.float64(x[0]),2) for x in res ]
+        }
+        return jsonify(response)
     
   
 # adding the defined resources along with their corresponding urls 
