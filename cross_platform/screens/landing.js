@@ -59,7 +59,7 @@ export class LandingComponent extends Component {
                     // data = {this.props.route.params.data}
                     renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
                 />
-                <View style={{ paddingTop: 350 }}>
+                <View style={{ paddingTop: 250 }}>
                     <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera'); }} />
                 </View>
                 <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
