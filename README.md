@@ -3,7 +3,7 @@
 2. To test backend you can run test.py and also develop it with some unit tests if you want.
 
 ### Some basic info for backend :
-1. Request and respose are jsons
+1. Request and response are in json
 2. We respond to a request with a large json.
 3. Request comes as base64 image and user_id.
 4. We predict and recommend for the same.
