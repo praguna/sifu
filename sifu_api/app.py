@@ -99,7 +99,6 @@ class Application(Resource):
         """
         userId = request.args.get("uid")
         if userId:
-            res = recommend(None, request.args.get("uid"))
             return self.get_json_response(userId)
         return jsonify({'message': 'hello world'}) 
   

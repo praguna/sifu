@@ -4,6 +4,8 @@ import Constants from 'expo-constants';
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
+import { env } from "../config";
+import AsyncStorage from '@react-native-community/async-storage'
 
 
 export class LoginComponent extends Component {
@@ -36,6 +38,14 @@ export class LoginComponent extends Component {
                 ToastAndroid.show(errorMessage, ToastAndroid.SHORT)
             })
             .then(function (result) {
+                fetch(env.server+"registerUser?email="+email, {
+                    method: "GET"
+                })
+                .then((response) => response.json())
+                .then((json) => {
+                    AsyncStorage.setItem('username', json.username);
+                    AsyncStorage.setItem('userID', json.userID);
+                });
                 if (flag) {
                     // navigation.navigate("Landing")
                     navigation.dispatch(StackActions.replace('Landing'))

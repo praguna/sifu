@@ -5,8 +5,6 @@ from pymongo import MongoClient
 from bson import json_util
 from utils.config import *
 
-app = Flask(__name__)
-
 class Comment(Resource):
     def __init__(self):
         mongo_client = MongoClient(atlas_connection_string)

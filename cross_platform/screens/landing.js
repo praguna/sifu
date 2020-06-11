@@ -3,8 +3,29 @@ import { View, FlatList, Text, StyleSheet, Button, TouchableOpacity, Image } fro
 import Constants from 'expo-constants';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
+import AsyncStorage from '@react-native-community/async-storage'
 
 export class LandingComponent extends Component {
+
+    state = {
+        username: '',
+        userID: '',
+        isLoaded: false
+    }
+
+    constructor(props){  
+        super(props);
+        AsyncStorage.getItem('username').then(value =>
+            this.setState({ username: value })
+        );
+        AsyncStorage.getItem('userID').then(value =>
+            {
+                this.setState({ userID: value });
+                this.setState({ isLoaded: true });
+            }
+        );
+    }
+
     handleSignout = (navigation) => {
         firebase.auth().signOut().then(function () {
             navigation.dispatch(StackActions.replace('Login'))
@@ -12,13 +33,13 @@ export class LandingComponent extends Component {
         console.log("Signed Out Successfully!")
     }
     render() {
-        // const {Data} = this.props.route.params.data
-        // console.log(this.props.route.params.data)
+        if(this.state.isLoaded){
         var popularRecipes = this.getPopularRecipeImages();
         return (
             <View style={StyleSheet.container}>
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
+                        <Text> Welcome {this.state.username} </Text>
                         <Text> Explore Our Popular Recipes : </Text>
 
                         {/* This is placeholder images for top 3 dishes  */}
@@ -65,6 +86,8 @@ export class LandingComponent extends Component {
                 <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
             </View>
         )
+        }
+        return null
     }
 
     getPopularRecipeImages = () => {

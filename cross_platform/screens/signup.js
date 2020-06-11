@@ -5,6 +5,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import { env } from "../config";
+import AsyncStorage from '@react-native-community/async-storage'
 
 export class SignupComponent extends Component{
     state = {
@@ -87,6 +88,8 @@ export class SignupComponent extends Component{
             })
             .then((response) => response.json())
             .then((json) => {
+                AsyncStorage.setItem('username', username);
+                AsyncStorage.setItem('userID', json.userID);
                 console.log(json.message);
             })
             .catch((error) => console.log(error))
