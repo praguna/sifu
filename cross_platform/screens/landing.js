@@ -80,13 +80,11 @@ export class LandingComponent extends Component {
             <View style={styles.container}>
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
-                        <Text style={{alignSelf: "center",}}> Welcome {this.state.username} </Text>
-                        
-                        <View style={{flexDirection:"row",  alignSelf: "center", margin: 10}}>
-                            <View>
-                                <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera'); }} />
-                            </View>
-                            <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
+                        <Text> Welcome {this.state.username} </Text>
+                        <Text> Recommended Recipes : </Text>
+                        <View>
+                            <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera',
+                            {username:this.state.username, userID:this.state.userID});}} />
                         </View>
                         {/* <Text> Recommended Recipes</Text> */}
                         <SearchBar        

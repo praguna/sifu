@@ -145,6 +145,8 @@ class Application(Resource):
             recipe['Category'] = doc['Category']
             recipe['image'] = {"uri": "data:image/jpeg;base64," + doc['imageBase64'].decode('utf-8')}
             response['recipes'].append(recipe)
+        if pred: 
+            response['Ingredients'] = pred
 
         return jsonify(response)
     

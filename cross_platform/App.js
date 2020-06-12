@@ -7,6 +7,7 @@ import {RecipeComponent} from './screens/recipe'
 import {SignupComponent} from './screens/signup'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { UserFeedBack } from './screens/userfeedback';
 
 const Stack  = createStackNavigator()
 
@@ -21,6 +22,7 @@ export default class SifuMobileApp extends PureComponent {
         <Stack.Screen name = "Camera" component={CameraComponent}/>
         <Stack.Screen name = "Display" component={DisplayComponent}/>
         <Stack.Screen name = "Signup" component={SignupComponent}/>
+        <Stack.Screen name = "UserFeedBack" component={UserFeedBack}/>
        </Stack.Navigator>
       </NavigationContainer>
     );

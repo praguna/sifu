@@ -14,7 +14,7 @@ export function Status({ show }) {
   if (show)
     return (
       <Text style={{ color: "green", alignContent: "center", margin: 10 }}>
-        Sending .....
+        processing .....
       </Text>
     );
   else {
@@ -23,11 +23,23 @@ export function Status({ show }) {
 }
 
 export class CameraComponent extends Component {
-  state = {
-    hasPermission: null,
-    type: Camera.Constants.Type.back,
-    show: false,
-  };
+
+  constructor(props){
+     super(props);
+     this.state = {
+        username : this.props.route.params.username,
+        userID : this.props.route.params.userID,
+        hasPermission: null,
+        type: Camera.Constants.Type.back,
+        show: false
+     }
+  }
+
+  // state = {
+  //   hasPermission: null,
+  //   type: Camera.Constants.Type.back,
+  //   show: false,
+  // };
 
   async componentDidMount() {
     this.getPermissionAsync();
@@ -82,15 +94,22 @@ export class CameraComponent extends Component {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              uid: "1",
+              uid: this.state.userID,
               data: data.base64,
             }),
           })
             .then((response) => response.json())
             .then((json) => {
-              this.props.navigation.push('Display', {recipes: json.recipes})
-              this.props.navigation.navigate("Display");
-              return json;
+              // if(typeof data === "undefined")
+              //   console.log("unreachable !!")
+              this.props.navigation.push('UserFeedBack', {
+                username:this.state.username, 
+                userID:this.state.userID,
+                image : data,
+                response : json
+              })
+              this.props.navigation.navigate("UserFeedBack");
+              // return json;
             })
             .catch((error) => console.log(error));
         })
