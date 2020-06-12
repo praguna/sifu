@@ -76,9 +76,9 @@ def recommend(ingredients,user_id):
        recipes = fetch_recipes(mongoClient)
     with graph2.as_default():
         with reco_session.as_default():
-            items = get_items(recommendation_data , recipes , user_id , ingredients)
+            items = get_items(recommendation_data , recipes ,ingredients)
             feed_dict = {
-                user : np.full(len(items),0).reshape(-1,1),
+                user : np.full(len(items),user_id).reshape(-1,1),
                 item : np.array(items).reshape(-1,1)
             }
             orginal = reco_session.run([output_layer],feed_dict)

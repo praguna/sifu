@@ -63,7 +63,7 @@ def fetch_recipes(client):
     recipe_collection = db["south_Indian_recipes"]
     return list(recipe_collection.find())
 
-def get_items(df,recipes,user_id,ingredients = None):
+def get_items(df,recipes,ingredients = None):
     global item_dict , ids_dict
     if item_dict is None: 
         item_dict = df[['item','item_id']].set_index('item_id').to_dict()['item']
