@@ -35,6 +35,7 @@ class Comment(Resource):
                     rName:"Rava Vada"
                     rating:4
                     comment:"Good"
+                    username: "Name"
         """
         
         data = request.get_json() 

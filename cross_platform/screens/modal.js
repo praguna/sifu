@@ -102,7 +102,8 @@ export default class CommentModal extends Component {
             "ReviewID": this.props.userID,
             "rName": this.props.recipeName,
             "rating":this.state.rating,
-            "comment":this.state.userComments
+            "comment":this.state.userComments,
+            "username": this.props.userName
         }),
     })
     .then( (response) => {console.log(response.json()) 

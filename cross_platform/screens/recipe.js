@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, FlatList } from "react-native";
 import Constants from "expo-constants";
+import {Rating} from 'react-native-elements';
 import UserRating from "./rating"
 import CommentModal from "./modal";
 import AsyncStorage from '@react-native-community/async-storage'
@@ -60,18 +61,25 @@ export class RecipeComponent extends Component {
                     
                     {this.checkReviewStatus()}
                     
-                    <View style={{ width: "90%" }} key={this.state.uniqueValue}>
+                    <View style={{ width: "95%" }} key={this.state.uniqueValue}>
                         <Text style={styles.recipe_label}> Customer Ratings for {this.state.recipe.Name} </Text>
     
                         {/* Pass recipe name as params to the CustomerRating component */}
                         {/* <UserRating /> */}
                         <FlatList                
                         data={this.state.reviews}
-                        renderItem={({ item }) => 
+                        renderItem={({ item }) =>
+                        
                         <View style ={styles.rating_style} >
-                            <Text style = {{marginBottom:10, fontWeight: '600'}}> ReviewID: {item.ReviewID} </Text>
-                            <Text style = {{marginBottom:10, fontWeight: '600'}}> Ratings: {item.rating} </Text>
-                            <Text style = {{marginBottom:10, fontWeight: '600'}}> Comments:</Text><Text> {item.comment} </Text>
+                            <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={require('../assets/profile.png')} />
+                            <View>
+                                <View style={{flexDirection:"row"}}>
+                                    <Text style = {{marginTop:15, fontWeight: '600'}}> User: {item.username} </Text>
+                                    {/* <Text style = {{marginTop:15, marginLeft:20, fontWeight: '600'}}> Ratings: {item.rating} </Text> */}
+            <Rating imageSize={20} readonly startingValue={item.rating} style = {{marginTop:15, marginLeft:10}}/><Text  style = {{marginTop:15}}>({item.rating})</Text>
+                                </View>
+                            <Text style = {{marginTop:15, fontWeight: '600'}}> Comments:</Text><Text> {item.comment} </Text>
+                            </View>
                         </View>}
                         keyExtractor={item => item.id}
                     />
@@ -92,6 +100,7 @@ export class RecipeComponent extends Component {
                 return a.timestamp > b.timestamp;
             });
             this.setState({ reviews: json });
+            console.log(json)
             for (let userObject of json) {
                 if (userObject.ReviewID == this.state.userID){
                     this.setState({
@@ -106,7 +115,7 @@ export class RecipeComponent extends Component {
             return(
                 <View>
                 <Text style={{alignSelf:"center", fontWeight:"700"}}>Want to leave a review? Click Below!</Text>
-                <CommentModal recipeName={this.state.recipe.Name} userID={this.state.userID} reloadScreen={this.getUserComments}/>
+                <CommentModal recipeName={this.state.recipe.Name} userID={this.state.userID} userName={this.state.username} reloadScreen={this.getUserComments}/>
                 </View>
                 )
         }
@@ -142,13 +151,25 @@ const styles = StyleSheet.create({
     },
     rating_style :{
         width:"90%",
-        borderWidth: 2,
-        borderRadius:5,
+        
+        borderRadius:15,
         alignSelf: "center",
         padding:10,
-        marginLeft:35,
-        marginBottom:10,
-        backgroundColor:"#FEFFFE"
+        marginLeft:30,
+        marginBottom:5,
+        backgroundColor:"#FEFFFE",
+        flex:1,
+        flexDirection: "row",
+    },
+    listitems:{
+        flex:1,
+        flexDirection: "row-reverse",
+        backgroundColor: '#bdc6cf',
+        alignSelf: "center",
+        justifyContent: "flex-end",
+        padding:5,
+        borderRadius:15,
+        width: "80%"
     }
 
 });
