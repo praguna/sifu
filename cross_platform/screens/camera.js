@@ -75,7 +75,7 @@ export class CameraComponent extends Component {
         .takePictureAsync({ base64: true })
         .then((data) => {
           //sending image
-          fetch(env.server+"recommendByImage", {
+          fetch(env.server+"recommend", {
             method: "POST",
             headers: {
               Accept: "application/json",
@@ -88,7 +88,8 @@ export class CameraComponent extends Component {
           })
             .then((response) => response.json())
             .then((json) => {
-              this.props.navigation.navigate("Display", json);
+              this.props.navigation.push('Display', {recipes: json.recipes})
+              this.props.navigation.navigate("Display");
               return json;
             })
             .catch((error) => console.log(error));

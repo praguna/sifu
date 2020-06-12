@@ -1,51 +1,18 @@
 import React, { Component } from 'react'
 import { View, FlatList, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native'
-import {SearchBar} from 'react-native-elements'
 import Constants from 'expo-constants';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import AsyncStorage from '@react-native-community/async-storage'
-
-const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      recipeName: 'Palya',
-      comment: 'Tasty recipe!!',
-      filePath: require('../assets/picture1.jpg')
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      recipeName: 'Dosa',
-      comment: 'Yummy recipe..',
-      filePath: require('../assets/picture2.jpg')
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      recipeName: 'Upma',
-      comment: 'Nice recipe',
-      filePath: require('../assets/picture3.jpg')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d74',
-        recipeName: 'Rice',
-        comment: 'Tasty recipe',
-        filePath: require('../assets/picture1.jpg')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d78',
-        recipeName: 'Poha',
-        comment: 'Yummy recipe!',
-        filePath: require('../assets/picture2.jpg')
-    },
-
-  ];
+import { env } from "../config";
 
 export class LandingComponent extends Component {
 
     state = {
         username: '',
         userID: '',
-        isLoaded: false
+        isLoaded: false,
+        recipes: []
     }
 
     constructor(props){  
@@ -56,9 +23,13 @@ export class LandingComponent extends Component {
         AsyncStorage.getItem('userID').then(value =>
             {
                 this.setState({ userID: value });
-                this.setState({ isLoaded: true });
             }
-        );
+        ).then(() => {
+            this.getPopularRecipeImages()
+            .then(() => {
+                this.setState({ isLoaded: true });
+            });
+        });
     }
 
     handleSignout = (navigation) => {
@@ -68,56 +39,28 @@ export class LandingComponent extends Component {
         console.log("Signed Out Successfully!")
     }
     render() {
+        //console.log(this.state.recipes);
         if(this.state.isLoaded){
-        var popularRecipes = this.getPopularRecipeImages();
         return (
             <View style={StyleSheet.container}>
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
                         <Text> Welcome {this.state.username} </Text>
-                        <Text> Explore Our Popular Recipes : </Text>
-                        <SearchBar        
-                            placeholder="Search for Recipes"        
-                            lightTheme        
-                            round        
-                            
-                            autoCorrect={false}             
-                        />    
+                        <Text> Recommended Recipes : </Text>
+
                         {/* This is placeholder images for top 3 dishes  */}
                         <View style={{ flexDirection: "row", marginTop: 10 }}>
-                            {/* {
-                                popularRecipes.map((item, key) => (
+                            {
+                                this.state.recipes.map((item, key) => (
                                     <TouchableOpacity key={key} style={{ flex: 1 }} activeOpacity={.5} onPress={() => {
-                                        this.props.navigation.push('Recipe', {
-                                            imgsrc: item.filePath,
-                                            recipeName: item.recipeName
-                                        })
+                                        this.props.navigation.push('Recipe', {recipe: item})
 
                                         this.props.navigation.navigate('Recipe')
                                     }}>
-                                        <Image style={{ width: 100, height: 100 }} source={item.filePath} />
+                                        <Image style={{ width: 100, height: 100 }} source={item.image} />
                                     </TouchableOpacity>
                                 ))
-                            } */}
-                            <FlatList data = {DATA} 
-                            renderItem = {({item})=><View>
-                                <TouchableOpacity key={item.id} style={{ margin:5,flex: 1, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
-                                        this.props.navigation.push('Recipe', {
-                                            imgsrc: item.filePath,
-                                            recipeName: item.recipeName
-                                        })
-
-                                        this.props.navigation.navigate('Recipe')
-                                    }}><View style={styles.listitems}>
-                                        <Text style={{marginTop:36}} >{item.recipeName}</Text>
-                                        <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={item.filePath} />
-                                        </View>
-                                    </TouchableOpacity>
-                            </View>
-
                             }
-                            keyExtractor={item => item.id}
-                            />
                         </View>
                     </View>
 
@@ -150,28 +93,14 @@ export class LandingComponent extends Component {
         return null
     }
 
-    getPopularRecipeImages = () => {
-        // var popularImageData = [];
-
-        // get from API
-        // var popularImageNames = ['picture1.jpg', 'picture2.jpg', 'picture3.jpg'];
-
-        // get from API
-        // var popularImageUri = '../assets/';
-
-        // to update the image source dynamically, as require() method takes only static values
-        // popularImageNames.forEach(function(key){
-        //     popularImageData.push(
-        //         {uri: popularImageUri+key}
-        //     );
-        // });
-        // return popularImageData;
-        var popularImageData = [
-            { filePath: require('../assets/picture1.jpg'), recipeName: "My Recipe 1" },
-            { filePath: require('../assets/picture2.jpg'), recipeName: "My Recipe 2" },
-            { filePath: require('../assets/picture3.jpg'), recipeName: "My Recipe 3" }
-        ];
-        return popularImageData;
+    getPopularRecipeImages = () => { 
+        return fetch(env.server+"recommend?userID="+this.state.userID,{
+            method: "GET"
+        })
+        .then((response) => response.json())
+        .then( (json) => {
+            this.setState({ recipes: json.recipes });
+        }).catch((error) => console.log(error))
     }
 }
 
@@ -192,15 +121,5 @@ const styles = StyleSheet.create({
     },
     new_section: {
         padding: 20,
-    },
-    listitems:{
-        flex:1,
-        flexDirection: "row-reverse",
-        backgroundColor: '#bdc6cf',
-        alignSelf: "center",
-        justifyContent: "flex-end",
-        padding:5,
-        borderRadius:15,
-        width: "80%"
     }
 });

@@ -90,14 +90,17 @@ def recommend(ingredients,user_id):
 
 class Application(Resource): 
 
+    def __init__(self):
+        self.max_recommend = 5
+
     # corresponds to the GET request. 
     # this function is called whenever there 
     # is a GET request for this resource
     def get(self): 
         """
-        url : <url>:5000/recommendByImage?uid=<userId>, otherwise returns hello world!
+        url : <url>:5000/recommend?userID=<userID>, otherwise returns hello world!
         """
-        userId = request.args.get("uid")
+        userId = request.args.get("userID")
         if userId:
             return self.get_json_response(userId)
         return jsonify({'message': 'hello world'}) 
@@ -105,7 +108,7 @@ class Application(Resource):
     # Corresponds to POST request 
     def post(self):
         """
-        url : <url>:5000/recommendByImage  
+        url : <url>:5000/recommend  
         data : {
             data : base64 encoded image from phone,
             uid : string formated or an integer number
@@ -124,16 +127,35 @@ class Application(Resource):
         return image
     
     def get_json_response(self,uid,pred=None):
-        res = recommend(pred, uid)
+        res = recommend(pred, uid)[:self.max_recommend]
+        db = mongoClient['food']
+        collection = db['south_Indian_recipes']
         response = {
-            "recipe": [ x[1] for x in res ],
-            "value" : [ round(np.float64(x[0]),2) for x in res ]
+            "recipes": []
         }
+        query = self.createQuery(res)
+        mdbResult = collection.find(query)
+        for doc in mdbResult:
+            recipe = {}
+            recipe['Name'] = doc['Name']
+            recipe['Ingredients'] = doc['Ingredients']
+            recipe['Method'] = doc['Method']
+            recipe['Preparation'] = doc['Preparation']
+            recipe['Category'] = doc['Category']
+            recipe['image'] = {"uri": "data:image/jpeg;base64," + doc['imageBase64'].decode('utf-8')}
+            response['recipes'].append(recipe)
+
         return jsonify(response)
+    
+    def createQuery(self,res):
+        query = { "Name": {"$in": [] }}
+        for x in res:
+            query["Name"]["$in"].append(x[1])
+        return query
     
   
 # adding the defined resources along with their corresponding urls 
-api.add_resource(Application, '/recommendByImage')
+api.add_resource(Application, '/recommend')
 api.add_resource(RegisterUser, '/registerUser') 
 api.add_resource(Comment, '/comment')
   

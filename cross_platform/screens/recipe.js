@@ -9,14 +9,12 @@ export class RecipeComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            imgsrc: (this.props.route.params.imgsrc == "") ? defimg : this.props.route.params.imgsrc,
-            recipeName: (this.props.route.params.recipeName == "") ? "Recipe" : this.props.route.params.recipeName
+            recipe: this.props.route.params.recipe
         }
     }
     render() {
         // const {Data} = this.props.route.params.data
         // console.log(this.props.route.params.data)
-
         return (
             <ScrollView >
                 <View>
@@ -25,18 +23,18 @@ export class RecipeComponent extends Component {
                     <View style={{ paddingLeft: 20 }}>
                         <Image
                             style={{ width: 375, height: 200 }}
-                            source={this.state.imgsrc}
+                            source={this.state.recipe.image}
                         />
                     </View>
 
                     {/* Fetch following from backend */}
-                    <Text style={styles.recipe_text}> How to Prepare {this.state.recipeName} </Text>
-                    <Text style={styles.recipe_text}> Ingredients: </Text>
-                    <Text style={styles.recipe_text}> Preparation: </Text>
-                    <Text style={styles.recipe_text}> Method: </Text>
+                    <Text style={styles.recipe_text}> How to Prepare {this.state.recipe.Name} </Text>
+                    <Text style={styles.recipe_text}> Ingredients: {this.state.recipe.Ingredients}</Text>
+                    <Text style={styles.recipe_text}> Preparation: {this.state.recipe.Preparation}</Text>
+                    <Text style={styles.recipe_text}> Method: {this.state.recipe.Method}</Text>
                 </View>
                 <View style={{ width: "90%" }} >
-                    <Text style={styles.recipe_text}> Customer Ratings for {this.state.recipeName} </Text>
+                    <Text style={styles.recipe_text}> Customer Ratings for {this.state.recipe.Name} </Text>
 
                     {/* Pass recipe name as params to the CustomerRating component */}
                     <UserRating />

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, KeyboardAvoidingView, ToastAndroid, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, Button, Image, KeyboardAvoidingView, ToastAndroid } from 'react-native';
 import Constants from 'expo-constants';
-import {Button} from 'react-native-elements'
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
@@ -28,7 +27,7 @@ export class LoginComponent extends Component {
         })
     }
 
-    handleLogin = (navigation, email, password) => {
+    handleSubmit = (navigation, email, password) => {
         var flag = true
         firebase.auth().signInWithEmailAndPassword(email, password)
             .catch(function (error) {
@@ -45,37 +44,42 @@ export class LoginComponent extends Component {
                 .then((response) => response.json())
                 .then((json) => {
                     AsyncStorage.setItem('username', json.username);
-                    AsyncStorage.setItem('userID', json.userID);
+                    AsyncStorage.setItem('userID', json.userID).then((token) => {
+                        if (flag) {
+                            // navigation.navigate("Landing")
+                            navigation.dispatch(StackActions.replace('Landing'))
+                            ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
+                        }
+                    });
                 });
-                if (flag) {
-                    // navigation.navigate("Landing")
-                    navigation.dispatch(StackActions.replace('Landing'))
-                    ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
-                }
             })
     }
 
     render() {
         return (
-             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null}       style={{ flex: 1,height:"100%" }} >
-                    <ImageBackground source = {require('../assets/background2.jpg')} style = {styles.bgimg} resizeMode="cover">
-                        <View style={styles.login_form_section}>
-                            <TextInput style={styles.inputbtn} placeholder="EmailID" onChangeText={this.handleEmail} />
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null}
+            style={{ flex: 1 }} >
+                <Image
+                    style={styles.splashimg}
+                    source={require("../assets/picture1.jpg")}
+                />
 
-                            <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Password" onChangeText={this.handlePassword} />
+                <View style={styles.login_form_section}>
+                    <TextInput style={styles.inputbtn} placeholder="EmailID" onChangeText={this.handleEmail} />
 
-                            <View style={styles.loginbtn} >
-                                <Button type="outline" raised title="Login" onPress={this.handleLogin.bind(this, this.props.navigation, this.state.email, this.state.password)}/>
-                            </View>
-                            <View style={{ alignSelf: "center" }}>
-                                <Text style={{color:"#FFF", alignSelf: "center"}} >New user? Click Sign Up!</Text>
-                                <View style={styles.loginbtn} >
-                                    <Button type="outline" raised title="Sign Up" onPress={() => { this.props.navigation.navigate('Signup') }} />
-                                </View>
-                            </View>
+                    <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Password" onChangeText={this.handlePassword} />
+
+                    <View style={styles.loginbtn} >
+                        <Button title="Login" onPress={this.handleSubmit.bind(this, this.props.navigation, this.state.email, this.state.password)} />
+                    </View>
+                    <View style={{ alignSelf: "center" }}>
+                        <Text style={{alignSelf: "center"}} >New user? Click Sign Up!</Text>
+                        <View style={styles.loginbtn} >
+                            <Button title="Sign Up" onPress={() => { this.props.navigation.navigate('Signup') }} />
                         </View>
-                    </ImageBackground>
-             </KeyboardAvoidingView>
+                    </View>
+                </View>
+            </KeyboardAvoidingView>
 
 
         )
@@ -84,31 +88,26 @@ export class LoginComponent extends Component {
 
 const styles = StyleSheet.create({
     loginbtn: {
+        borderWidth: 2,
         margin: 20,
-        alignSelf: "center",        
+        alignSelf: "center",
+        borderRadius: 10
     },
     inputbtn: {
         margin: 10,
-        
+        borderWidth: 1,
         padding: 15,
         borderRadius: 5,
         width: "80%",
-        alignSelf: "center",
-        backgroundColor:'rgba(255, 255, 255, 0.9)'
+        alignSelf: "center"
     },
     login_form_section: {
-        marginTop: "80%",
-        height:"100%"
+        marginTop: "40%"
     },
     splashimg: {
-        width: "100%",
-        height: "100%",
+        width: 375,
+        height: 200,
         alignSelf: "center",
-        
-    },
-    bgimg:{
-        height:"100%",
-        width:"100%",
-        opacity: 0.9
+        marginTop: 30
     }
 });
