@@ -14,7 +14,8 @@ export class RecipeComponent extends Component {
         userID: '',
         isCommentsLoaded : false,
         recipe: this.props.route.params.recipe,
-        reviews: []
+        reviews: [],
+        canSubmit:true
     }
     constructor(props) {
         super(props);
@@ -55,8 +56,8 @@ export class RecipeComponent extends Component {
                         <Text style={styles.recipe_label}>Preparation: </Text><Text style={styles.recipe_text}> {this.state.recipe.Preparation}</Text>
                         <Text style={styles.recipe_label}>Method: </Text><Text style={styles.recipe_text}>{this.state.recipe.Method}</Text>
                     </View>
-                    <Text style={{alignSelf:"center", fontWeight:"700"}}>Want to leave a comment? Click Below!</Text>
-                    <CommentModal recipeName={this.state.recipe.Name} userID={this.state.userID} />
+                    
+                    {this.checkReviewStatus()}
                     <View style={{ width: "90%" }} >
                         <Text style={styles.recipe_label}> Customer Ratings for {this.state.recipe.Name} </Text>
     
@@ -66,10 +67,9 @@ export class RecipeComponent extends Component {
                         data={this.state.reviews}
                         renderItem={({ item }) => 
                         <View style ={styles.rating_style} >
-                            <Text style = {{marginBottom:10, fontWeight: '600'}}> Username: {item.ReviewID} </Text>
+                            <Text style = {{marginBottom:10, fontWeight: '600'}}> ReviewID: {item.ReviewID} </Text>
                             <Text style = {{marginBottom:10, fontWeight: '600'}}> Ratings: {item.rating} </Text>
-                            <Text style = {{marginBottom:10, fontWeight: '600'}}> Comments:  </Text>
-                            <Text> {item.comment}</Text>
+                            <Text style = {{marginBottom:10, fontWeight: '600'}}> Comments:</Text><Text> {item.comment} </Text>
                         </View>}
                         keyExtractor={item => item.id}
                     />
@@ -87,8 +87,25 @@ export class RecipeComponent extends Component {
         .then((response) => response.json())
         .then( (json) => {
             this.setState({ reviews: json });
-            console.log(json)
+            for (let userObject of json) {
+                if (userObject.ReviewID == this.state.userID){
+                    this.setState({
+                        canSubmit : false
+                    })
+                }
+            }
         }).catch((error) => console.log(error))
+    }
+    checkReviewStatus = () => {
+        if(this.state.canSubmit == true){
+            return(
+                <View>
+                <Text style={{alignSelf:"center", fontWeight:"700"}}>Want to leave a review? Click Below!</Text>
+                <CommentModal recipeName={this.state.recipe.Name} userID={this.state.userID} />
+                </View>
+                )
+        }
+        return (<Text style={{alignSelf:"center", fontWeight:"700"}}>You have already submitted a review.</Text>)
     }
 }
 
