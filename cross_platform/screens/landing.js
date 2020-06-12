@@ -8,47 +8,17 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { env } from "../config";
 // import { ScrollView } from 'react-native-gesture-handler';
 
-const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      recipeName: 'Palya',
-      comment: 'Tasty recipe!!',
-      filePath: require('../assets/picture1.jpg')
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      recipeName: 'Dosa',
-      comment: 'Yummy recipe..',
-      filePath: require('../assets/picture2.jpg')
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      recipeName: 'Upma',
-      comment: 'Nice recipe',
-      filePath: require('../assets/picture3.jpg')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d74',
-        recipeName: 'Rice',
-        comment: 'Tasty recipe',
-        filePath: require('../assets/picture1.jpg')
-    },
-    {
-        id: '58694a0f-3da1-471f-bd96-145571e29d78',
-        recipeName: 'Poha',
-        comment: 'Yummy recipe!',
-        filePath: require('../assets/picture2.jpg')
-    },
-
-  ];
-
 export class LandingComponent extends Component {
 
     state = {
         username: '',
         userID: '',
         isLoaded: false,
-        recipes: []
+        isShowingSearchResult: false,
+        recipes: [],
+        recommendedRecipes: [],
+        search: '',
+        searchData: []
     }
 
     constructor(props){  
@@ -74,14 +44,10 @@ export class LandingComponent extends Component {
         console.log("Signed Out Successfully!")
     }
     render() {
-        //console.log(this.state.recipes);
+        const { search } = this.state;
         if(this.state.isLoaded){
         return (
-<<<<<<< HEAD
-            <View style={styles.container}>
-=======
             <ScrollView style={styles.container}>
->>>>>>> frontend
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
                         <Text> Welcome {this.state.username} </Text>
@@ -95,8 +61,9 @@ export class LandingComponent extends Component {
                             placeholder="Search for Recipes"        
                             lightTheme        
                             round        
-                            
-                            autoCorrect={false}             
+                            onChangeText={text => this.searchFilterFunction(text)}
+                            autoCorrect={false} 
+                            value={search}            
                         />
                         <FlatList data = {this.state.recipes} 
                             renderItem = {({item})=><View>
@@ -131,9 +98,24 @@ export class LandingComponent extends Component {
         .then((response) => response.json())
         .then( (json) => {
             this.setState({ recipes: json.recipes });
-            console.log(json.recipes)
+            this.setState({ recommendedRecipes: json.recipes });
         }).catch((error) => console.log(error))
     }
+
+    searchFilterFunction = text => { 
+        this.setState({ search: text });
+        fetch(env.server+"search?query="+text,{
+            method: "GET"
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            if(json.queryResult.length == 0){
+                this.setState({recipes: this.state.recommendedRecipes});
+            }else {
+                this.setState({ recipes: json.queryResult }); 
+            }
+        }) 
+      };
 }
 
 

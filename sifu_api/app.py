@@ -59,6 +59,10 @@ def load_init():
 def initializeMongoClient():
     global mongoClient
     mongoClient = pymongo.MongoClient(atlas_connection_string)
+    #create Index for search query
+    db = mongoClient['food']
+    collection = db['south_Indian_recipes']
+    collection.create_index([('Name', pymongo.TEXT)], name='search_index', default_language='english')
 
 def predict(image):
     global ir_model, model_src, ir_session
@@ -87,6 +91,24 @@ def recommend(ingredients,user_id):
             res = response_dictionary(recipes,preds,user_id)
             return preds
 #########################################################################################################
+
+class AllRecipes(Resource):
+    def get(self):
+        db = mongoClient['food']
+        collection = db['south_Indian_recipes']
+        query = request.args.get("query")
+        data = collection.find( { "$text" : { "$search" : query } },{'_id':0})
+        response = {'queryResult': []}
+        for doc in data:
+            recipe = {}
+            recipe['Name'] = doc['Name']
+            recipe['Ingredients'] = doc['Ingredients']
+            recipe['Method'] = doc['Method']
+            recipe['Preparation'] = doc['Preparation']
+            recipe['Category'] = doc['Category']
+            recipe['image'] = {"uri": "data:image/jpeg;base64," + doc['imageBase64'].decode('utf-8')}
+            response['queryResult'].append(recipe)
+        return jsonify(response)
 
 
 class Application(Resource): 
@@ -163,6 +185,7 @@ api.add_resource(Application, '/recommend')
 api.add_resource(RegisterUser, '/registerUser') 
 api.add_resource(Comment, '/comment')
 api.add_resource(LabelByUser, '/labelByUser')
+api.add_resource(AllRecipes, '/search')
   
   
 # driver function 
