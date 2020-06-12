@@ -92,7 +92,7 @@ def recommend(ingredients,user_id):
 class Application(Resource): 
 
     def __init__(self):
-        self.max_recommend = 5
+        self.max_recommend = 10
 
     # corresponds to the GET request. 
     # this function is called whenever there 
@@ -137,6 +137,7 @@ class Application(Resource):
         query = self.createQuery(res)
         mdbResult = collection.find(query)
         for doc in mdbResult:
+            print(doc['Name'])
             recipe = {}
             recipe['Name'] = doc['Name']
             recipe['Ingredients'] = doc['Ingredients']

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { View, FlatList, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native'
+import { View, FlatList,ScrollView, Text, StyleSheet, Button, TouchableOpacity, Image, SafeAreaView } from 'react-native'
 import {SearchBar} from 'react-native-elements'
 import Constants from 'expo-constants';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import AsyncStorage from '@react-native-community/async-storage'
 import { env } from "../config";
+// import { ScrollView } from 'react-native-gesture-handler';
 
 const DATA = [
     {
@@ -66,7 +67,6 @@ export class LandingComponent extends Component {
             });
         });
     }
-
     handleSignout = (navigation) => {
         firebase.auth().signOut().then(function () {
             navigation.dispatch(StackActions.replace('Login'))
@@ -77,7 +77,11 @@ export class LandingComponent extends Component {
         //console.log(this.state.recipes);
         if(this.state.isLoaded){
         return (
+<<<<<<< HEAD
             <View style={styles.container}>
+=======
+            <ScrollView style={styles.container}>
+>>>>>>> frontend
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
                         <Text> Welcome {this.state.username} </Text>
@@ -94,32 +98,27 @@ export class LandingComponent extends Component {
                             
                             autoCorrect={false}             
                         />
-                        <FlatList data = {DATA} 
+                        <FlatList data = {this.state.recipes} 
                             renderItem = {({item})=><View>
-                                <TouchableOpacity key={item.id} style={{ margin:5,flex: 1, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
-                                        this.props.navigation.push('Recipe', {
-                                            imgsrc: item.filePath,
-                                            recipeName: item.recipeName
-                                        })
-
-                                        this.props.navigation.navigate('Recipe')
+                                <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
+                                        this.props.navigation.push('Recipe', {recipe: item})
                                     }}>
                                         <View style={styles.listitems}>
-                                            <Text style={{marginTop:36}} >{item.recipeName}</Text>
-                                            <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={item.filePath} />
+                                            <Text style={{marginTop:36}} >{item.Name}</Text>
+                                            <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={item.image} />
                                         </View>
                                     </TouchableOpacity>
                                 </View>
 
                             }
-                            keyExtractor={item => item.id}
-                        />
+                            
+            />
                         
                     </View>                    
                 </View>
 
                 
-            </View>
+            </ScrollView>
         )
         }
         return null
