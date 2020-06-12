@@ -44,7 +44,7 @@ export class LandingComponent extends Component {
         console.log("Signed Out Successfully!")
     }
     render() {
-        //console.log(this.state.recipes);
+        const { search } = this.state;
         if(this.state.isLoaded){
         return (
             <ScrollView style={styles.container}>
@@ -61,8 +61,9 @@ export class LandingComponent extends Component {
                             placeholder="Search for Recipes"        
                             lightTheme        
                             round        
-                            
-                            autoCorrect={false}             
+                            onChangeText={text => this.searchFilterFunction(text)}
+                            autoCorrect={false} 
+                            value={search}            
                         />
                         <FlatList data = {this.state.recipes} 
                             renderItem = {({item})=><View>
@@ -97,9 +98,24 @@ export class LandingComponent extends Component {
         .then((response) => response.json())
         .then( (json) => {
             this.setState({ recipes: json.recipes });
-            console.log(json.recipes)
+            this.setState({ recommendedRecipes: json.recipes });
         }).catch((error) => console.log(error))
     }
+
+    searchFilterFunction = text => { 
+        this.setState({ search: text });
+        fetch(env.server+"search?query="+text,{
+            method: "GET"
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            if(json.queryResult.length == 0){
+                this.setState({recipes: this.state.recommendedRecipes});
+            }else {
+                this.setState({ recipes: json.queryResult }); 
+            }
+        }) 
+      };
 }
 
 
