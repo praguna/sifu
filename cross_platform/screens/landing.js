@@ -80,12 +80,11 @@ export class LandingComponent extends Component {
             <ScrollView style={styles.container}>
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
-                        
-
-
-
-
-                            <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
+                        <Text> Welcome {this.state.username} </Text>
+                        <Text> Recommended Recipes : </Text>
+                        <View>
+                            <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera',
+                            {username:this.state.username, userID:this.state.userID});}} />
                         </View>
                         {/* <Text> Recommended Recipes</Text> */}
                         <SearchBar        
@@ -112,7 +111,7 @@ export class LandingComponent extends Component {
             />
                         
                     </View>                    
-                {/* </View> */}
+                </View>
 
                 
             </ScrollView>
