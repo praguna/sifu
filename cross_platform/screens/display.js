@@ -3,16 +3,31 @@ import {View , FlatList , Text , StyleSheet} from 'react-native'
 import Constants from 'expo-constants';
 
 export class DisplayComponent extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            recipes: this.props.route.params.recipes
+        }
+    }
+
     render(){
-        var {recipe} = this.props.route.params
-        const numberOfItems = 5;
+        console.log("display")
+        //console.log(this.state.recipes)
         return (
             <View style={StyleSheet.container}>
                 <Text style = {StyleSheet.heading}> Recommended Recipes : </Text>
-                <FlatList 
-                    data = {recipe.slice(0,numberOfItems)}
-                    renderItem={({ item })=> <Text style={styles.item}>{item}</Text>}
-                />
+                    <FlatList 
+                        data = {this.state.recipes}
+                        renderItem={({ item })=>
+                                <Text 
+                                style={styles.item}
+                                onPress={() => {
+                                    this.props.navigation.push('Recipe', {recipe: item})
+                                    this.props.navigation.navigate('Recipe')
+                                }}
+                                >{item.Name}</Text>
+                        }
+                    />
             </View>   
         )
     }

@@ -27,7 +27,7 @@ export class LoginComponent extends Component {
         })
     }
 
-    handleLogin = (navigation, email, password) => {
+    handleSubmit = (navigation, email, password) => {
         var flag = true
         firebase.auth().signInWithEmailAndPassword(email, password)
             .catch(function (error) {
@@ -44,13 +44,14 @@ export class LoginComponent extends Component {
                 .then((response) => response.json())
                 .then((json) => {
                     AsyncStorage.setItem('username', json.username);
-                    AsyncStorage.setItem('userID', json.userID);
+                    AsyncStorage.setItem('userID', json.userID).then((token) => {
+                        if (flag) {
+                            // navigation.navigate("Landing")
+                            navigation.dispatch(StackActions.replace('Landing'))
+                            ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
+                        }
+                    });
                 });
-                if (flag) {
-                    // navigation.navigate("Landing")
-                    navigation.dispatch(StackActions.replace('Landing'))
-                    ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
-                }
             })
     }
 
@@ -69,7 +70,7 @@ export class LoginComponent extends Component {
                     <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Password" onChangeText={this.handlePassword} />
 
                     <View style={styles.loginbtn} >
-                        <Button title="Login" onPress={this.handleLogin.bind(this, this.props.navigation, this.state.email, this.state.password)} />
+                        <Button title="Login" onPress={this.handleSubmit.bind(this, this.props.navigation, this.state.email, this.state.password)} />
                     </View>
                     <View style={{ alignSelf: "center" }}>
                         <Text style={{alignSelf: "center"}} >New user? Click Sign Up!</Text>

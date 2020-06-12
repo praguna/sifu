@@ -4,13 +4,15 @@ import Constants from 'expo-constants';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import AsyncStorage from '@react-native-community/async-storage'
+import { env } from "../config";
 
 export class LandingComponent extends Component {
 
     state = {
         username: '',
         userID: '',
-        isLoaded: false
+        isLoaded: false,
+        recipes: []
     }
 
     constructor(props){  
@@ -21,9 +23,13 @@ export class LandingComponent extends Component {
         AsyncStorage.getItem('userID').then(value =>
             {
                 this.setState({ userID: value });
-                this.setState({ isLoaded: true });
             }
-        );
+        ).then(() => {
+            this.getPopularRecipeImages()
+            .then(() => {
+                this.setState({ isLoaded: true });
+            });
+        });
     }
 
     handleSignout = (navigation) => {
@@ -33,28 +39,25 @@ export class LandingComponent extends Component {
         console.log("Signed Out Successfully!")
     }
     render() {
+        //console.log(this.state.recipes);
         if(this.state.isLoaded){
-        var popularRecipes = this.getPopularRecipeImages();
         return (
             <View style={StyleSheet.container}>
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
                         <Text> Welcome {this.state.username} </Text>
-                        <Text> Explore Our Popular Recipes : </Text>
+                        <Text> Recommended Recipes : </Text>
 
                         {/* This is placeholder images for top 3 dishes  */}
                         <View style={{ flexDirection: "row", marginTop: 10 }}>
                             {
-                                popularRecipes.map((item, key) => (
+                                this.state.recipes.map((item, key) => (
                                     <TouchableOpacity key={key} style={{ flex: 1 }} activeOpacity={.5} onPress={() => {
-                                        this.props.navigation.push('Recipe', {
-                                            imgsrc: item.filePath,
-                                            recipeName: item.recipeName
-                                        })
+                                        this.props.navigation.push('Recipe', {recipe: item})
 
                                         this.props.navigation.navigate('Recipe')
                                     }}>
-                                        <Image style={{ width: 100, height: 100 }} source={item.filePath} />
+                                        <Image style={{ width: 100, height: 100 }} source={item.image} />
                                     </TouchableOpacity>
                                 ))
                             }
@@ -90,28 +93,14 @@ export class LandingComponent extends Component {
         return null
     }
 
-    getPopularRecipeImages = () => {
-        // var popularImageData = [];
-
-        // get from API
-        // var popularImageNames = ['picture1.jpg', 'picture2.jpg', 'picture3.jpg'];
-
-        // get from API
-        // var popularImageUri = '../assets/';
-
-        // to update the image source dynamically, as require() method takes only static values
-        // popularImageNames.forEach(function(key){
-        //     popularImageData.push(
-        //         {uri: popularImageUri+key}
-        //     );
-        // });
-        // return popularImageData;
-        var popularImageData = [
-            { filePath: require('../assets/picture1.jpg'), recipeName: "My Recipe 1" },
-            { filePath: require('../assets/picture2.jpg'), recipeName: "My Recipe 2" },
-            { filePath: require('../assets/picture3.jpg'), recipeName: "My Recipe 3" }
-        ];
-        return popularImageData;
+    getPopularRecipeImages = () => { 
+        return fetch(env.server+"recommend?userID="+this.state.userID,{
+            method: "GET"
+        })
+        .then((response) => response.json())
+        .then( (json) => {
+            this.setState({ recipes: json.recipes });
+        }).catch((error) => console.log(error))
     }
 }
 
