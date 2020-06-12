@@ -13,7 +13,6 @@ export class UserFeedBack extends Component{
             response : this.props.route.params.response,
             text : ""
         }
-        // console.log(this.state.response["Ingredients"])
     }
 
     handleSubmit = async ()=>{
@@ -34,17 +33,17 @@ export class UserFeedBack extends Component{
           }).then(res=>res.json())
           .then(json=>{
               if(Platform.OS === "android") ToastAndroid.show(json["message"], ToastAndroid.LONG);
-              this.gotToLandingPage();
+              this.gotToDisplayPage();
           }).catch(err=>console.error(err))
     }
 
-    gotToLandingPage = ()=>{
-        this.props.navigation.push("Landing",{
+    gotToDisplayPage = ()=>{
+        this.props.navigation.push("Display",{
             username:this.state.username,
             userID:this.state.userID,
             response:this.state.response
         });
-        this.props.navigation.navigate("Landing");
+        this.props.navigation.navigate("Display");
     }
 
     renderButtons = ()=>{
@@ -92,7 +91,7 @@ export class UserFeedBack extends Component{
                 <View style={styles.skipbtn} >
                 <Button 
                     title=">> skip"
-                    onPress = {this.gotToLandingPage}
+                    onPress = {this.gotToDisplayPage}
                 />
                 </View>
             </KeyboardAvoidingView >
