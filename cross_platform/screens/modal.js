@@ -1,15 +1,32 @@
 import React, { Component } from "react";
 import { Alert, Modal, StyleSheet, Text, TouchableHighlight, View} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import {Rating, AirbnbRating } from 'react-native-elements'
+import {Rating, AirbnbRating } from 'react-native-elements';
+import { env } from "../config";
 
 export default class CommentModal extends Component {
   state = {
-    modalVisible: false
+    modalVisible: false,
+    rating:0,
+    userComments:"",
   };
 
   setModalVisible = (visible) => {
     this.setState({ modalVisible: visible });
+  }
+
+  ratingCompleted = (rate) => {
+    console.log("Rating is: " + rate)
+    this.setState({
+        rating:rate
+    })
+  }
+
+  handleCommentText = (com) =>{
+      console.log(com)
+      this.setState({
+          userComments: com
+      })
   }
 
   render() {
@@ -27,16 +44,18 @@ export default class CommentModal extends Component {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Submit Comments</Text>
-              <TextInput style={styles.modalTextInput} placeholder="Type your comments here.."/>
+              <TextInput style={styles.modalTextInput} placeholder="Type your comments here.." onChangeText={this.handleCommentText}/>
               <Rating 
                     type = "custom"
-                    ratingBackgroundColor = "#F2F2F2" 
+                    ratingBackgroundColor = "#F2F2F2"
+                    onFinishRating={this.ratingCompleted}
               />
               <View style={styles.inModalButtons}>
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: "#2196F3",margin:5 }}
                 onPress={() => {
                   this.setModalVisible(!modalVisible);
+                  this.submitComments()
                 }}
               >
                 <Text style={styles.textStyle}>Submit</Text>
@@ -64,6 +83,30 @@ export default class CommentModal extends Component {
         </TouchableHighlight>
       </View>
     );
+  }
+  
+        // usage:      Post request Body:-
+        //             ReviewID:5
+        //             rName:"Rava Vada"
+        //             rating:4
+        //             comment:"Good"
+        
+  submitComments = () =>{
+    fetch(env.server+"comment", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "ReviewID": this.props.userID,
+            "rName": this.props.recipeName,
+            "rating":this.state.rating,
+            "comment":this.state.userComments
+        }),
+    })
+    .then( (response) => console.log(response.json()) )
+    .catch((error) => console.log(error))
   }
 }
 

@@ -67,7 +67,6 @@ export class LandingComponent extends Component {
             });
         });
     }
-
     handleSignout = (navigation) => {
         firebase.auth().signOut().then(function () {
             navigation.dispatch(StackActions.replace('Login'))
@@ -81,12 +80,11 @@ export class LandingComponent extends Component {
             <ScrollView style={styles.container}>
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
-                        <Text style={{alignSelf: "center",}}> Welcome {this.state.username} </Text>
                         
-                        <View style={{flexDirection:"row",  alignSelf: "center", margin: 10}}>
-                            <View>
-                                <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera'); }} />
-                            </View>
+
+
+
+
                             <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
                         </View>
                         {/* <Text> Recommended Recipes</Text> */}
@@ -100,12 +98,6 @@ export class LandingComponent extends Component {
                         <FlatList data = {this.state.recipes} 
                             renderItem = {({item})=><View>
                                 <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
-                                        // this.props.navigation.push('Recipe', {
-                                        //     imgsrc: item.image,
-                                        //     recipeName: item.Name
-                                        // })
-
-                                        // this.props.navigation.navigate('Recipe')
                                         this.props.navigation.push('Recipe', {recipe: item})
                                     }}>
                                         <View style={styles.listitems}>
@@ -120,7 +112,7 @@ export class LandingComponent extends Component {
             />
                         
                     </View>                    
-                </View>
+                {/* </View> */}
 
                 
             </ScrollView>
