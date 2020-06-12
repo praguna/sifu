@@ -56,9 +56,9 @@ export class LoginComponent extends Component {
     }
 
     render() {
+        const keyboardVerticalOffset = Platform.OS === 'android' ? 80 : 60
         return (
-            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null}
-            style={{ flex: 1 }} >
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null} keyboardVerticalOffset={keyboardVerticalOffset} >
                 <ImageBackground source = {require('../assets/background2.jpg')} style = {styles.bgimg} resizeMode="cover">
                 
 

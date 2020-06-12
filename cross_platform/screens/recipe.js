@@ -15,7 +15,8 @@ export class RecipeComponent extends Component {
         isCommentsLoaded : false,
         recipe: this.props.route.params.recipe,
         reviews: [],
-        canSubmit:true
+        canSubmit:true,
+        uniqueValue: 1
     }
     constructor(props) {
         super(props);
@@ -58,7 +59,8 @@ export class RecipeComponent extends Component {
                     </View>
                     
                     {this.checkReviewStatus()}
-                    <View style={{ width: "90%" }} >
+                    
+                    <View style={{ width: "90%" }} key={this.state.uniqueValue}>
                         <Text style={styles.recipe_label}> Customer Ratings for {this.state.recipe.Name} </Text>
     
                         {/* Pass recipe name as params to the CustomerRating component */}
@@ -86,6 +88,9 @@ export class RecipeComponent extends Component {
         })
         .then((response) => response.json())
         .then( (json) => {
+            json.sort(function(a, b) {
+                return a.timestamp > b.timestamp;
+            });
             this.setState({ reviews: json });
             for (let userObject of json) {
                 if (userObject.ReviewID == this.state.userID){
@@ -101,12 +106,18 @@ export class RecipeComponent extends Component {
             return(
                 <View>
                 <Text style={{alignSelf:"center", fontWeight:"700"}}>Want to leave a review? Click Below!</Text>
-                <CommentModal recipeName={this.state.recipe.Name} userID={this.state.userID} />
+                <CommentModal recipeName={this.state.recipe.Name} userID={this.state.userID} reloadScreen={this.getUserComments}/>
                 </View>
                 )
         }
         return (<Text style={{alignSelf:"center", fontWeight:"700"}}>You have already submitted a review.</Text>)
     }
+    forceRemount = () => {
+        this.setState({
+          uniqueValue: this.state.uniqueValue + 1
+        });
+        console.log("Force remount fired")
+      }
 }
 
 const styles = StyleSheet.create({

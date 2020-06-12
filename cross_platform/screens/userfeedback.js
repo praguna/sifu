@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         textAlign : "center",
         fontWeight: 'bold',
         fontSize: 18,
-        fontFamily : "sans-serif-medium",
+        // fontFamily : "sans-serif-medium",
         textDecorationLine: 'underline',
         marginHorizontal: 16,
         color : "blue"

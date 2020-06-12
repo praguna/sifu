@@ -105,8 +105,11 @@ export default class CommentModal extends Component {
             "comment":this.state.userComments
         }),
     })
-    .then( (response) => console.log(response.json()) )
+    .then( (response) => {console.log(response.json()) 
+        this.props.reloadScreen()} )
     .catch((error) => console.log(error))
+
+    
   }
 }
 

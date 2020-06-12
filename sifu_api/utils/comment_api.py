@@ -1,9 +1,11 @@
 import numpy as np
+import time
 from flask import Flask, jsonify, request 
 from flask_restful import Resource, Api 
 from pymongo import MongoClient
 from bson import json_util
 from utils.config import *
+
 
 class Comment(Resource):
     def __init__(self):
@@ -36,6 +38,7 @@ class Comment(Resource):
         """
         
         data = request.get_json() 
+        data['timestamp'] = int(time.time()*1000)
         self.collection.insert_one(data)
         response = {"message": "Success: Comment posted to Mongo DB"}
         return jsonify(response)
