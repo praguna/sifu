@@ -10,6 +10,7 @@ from utils.models import Models
 from utils.prediction_utils import *
 from utils.user_utils import *
 from utils.comment_api import *
+from utils.labelByUser_api import *
 # import tensorflow.compat.v1 as tf
 import tensorflow as tf
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -158,6 +159,7 @@ class Application(Resource):
 api.add_resource(Application, '/recommend')
 api.add_resource(RegisterUser, '/registerUser') 
 api.add_resource(Comment, '/comment')
+api.add_resource(LabelByUser, '/labelByUser')
   
   
 # driver function 
