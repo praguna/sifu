@@ -23,6 +23,15 @@ export class LandingComponent extends Component {
 
     constructor(props){  
         super(props);
+        if(typeof this.props.route.params !== "undefined"){
+            this.setState({ 
+                username : this.props.route.params.username,
+                userID : this.props.route.params.userID,
+                recipes : this.props.route.params.response.recipes,
+                recommendedRecipes: this.props.route.params.response.recipes,
+                isLoaded: true})
+        }
+
         AsyncStorage.getItem('username').then(value =>
             this.setState({ username: value })
         );
@@ -99,6 +108,7 @@ export class LandingComponent extends Component {
         .then( (json) => {
             this.setState({ recipes: json.recipes });
             this.setState({ recommendedRecipes: json.recipes });
+            // console.log(json.recipes)
         }).catch((error) => console.log(error))
     }
 
