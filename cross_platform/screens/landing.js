@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { View, FlatList, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native'
+import { View, FlatList,ScrollView, Text, StyleSheet, Button, TouchableOpacity, Image, SafeAreaView } from 'react-native'
 import {SearchBar} from 'react-native-elements'
 import Constants from 'expo-constants';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import AsyncStorage from '@react-native-community/async-storage'
 import { env } from "../config";
+// import { ScrollView } from 'react-native-gesture-handler';
 
 const DATA = [
     {
@@ -77,15 +78,18 @@ export class LandingComponent extends Component {
         //console.log(this.state.recipes);
         if(this.state.isLoaded){
         return (
-            <View style={StyleSheet.container}>
+            <ScrollView style={styles.container}>
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
-                        <Text> Welcome {this.state.username} </Text>
-                        <Text> Recommended Recipes : </Text>
-                        <View>
-                            <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera'); }} />
+                        <Text style={{alignSelf: "center",}}> Welcome {this.state.username} </Text>
+                        
+                        <View style={{flexDirection:"row",  alignSelf: "center", margin: 10}}>
+                            <View>
+                                <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera'); }} />
+                            </View>
+                            <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
                         </View>
-                        <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
+                        {/* <Text> Recommended Recipes</Text> */}
                         <SearchBar        
                             placeholder="Search for Recipes"        
                             lightTheme        
@@ -93,32 +97,33 @@ export class LandingComponent extends Component {
                             
                             autoCorrect={false}             
                         />
-                        <FlatList data = {DATA} 
+                        <FlatList data = {this.state.recipes} 
                             renderItem = {({item})=><View>
-                                <TouchableOpacity key={item.id} style={{ margin:5,flex: 1, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
-                                        this.props.navigation.push('Recipe', {
-                                            imgsrc: item.filePath,
-                                            recipeName: item.recipeName
-                                        })
+                                <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
+                                        // this.props.navigation.push('Recipe', {
+                                        //     imgsrc: item.image,
+                                        //     recipeName: item.Name
+                                        // })
 
-                                        this.props.navigation.navigate('Recipe')
+                                        // this.props.navigation.navigate('Recipe')
+                                        this.props.navigation.push('Recipe', {recipe: item})
                                     }}>
                                         <View style={styles.listitems}>
-                                            <Text style={{marginTop:36}} >{item.recipeName}</Text>
-                                            <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={item.filePath} />
+                                            <Text style={{marginTop:36}} >{item.Name}</Text>
+                                            <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={item.image} />
                                         </View>
                                     </TouchableOpacity>
                                 </View>
 
                             }
-                            keyExtractor={item => item.id}
-                        />
+                            
+            />
                         
                     </View>                    
                 </View>
 
                 
-            </View>
+            </ScrollView>
         )
         }
         return null
@@ -131,6 +136,7 @@ export class LandingComponent extends Component {
         .then((response) => response.json())
         .then( (json) => {
             this.setState({ recipes: json.recipes });
+            console.log(json.recipes)
         }).catch((error) => console.log(error))
     }
 }
@@ -138,8 +144,11 @@ export class LandingComponent extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        marginTop: Constants.statusBarHeight,
+        // flex: 1,
+        // marginTop: Constants.statusBarHeight,
+        backgroundColor:"#E1E8EE",
+        height:"100%",
+        width:"100%"
     },
     item: {
         backgroundColor: '#f9c2ff',

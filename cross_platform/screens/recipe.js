@@ -2,21 +2,42 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, FlatList } from "react-native";
 import Constants from "expo-constants";
 import UserRating from "./rating"
+import CommentModal from "./modal";
+import AsyncStorage from '@react-native-community/async-storage'
+import { env } from "../config";
 
 const defimg = require('../assets/default.jpg');
 
 export class RecipeComponent extends Component {
+    state = {
+        username: '',
+        userID: '',
+        isCommentsLoaded : false,
+        recipe: this.props.route.params.recipe,
+        reviews: []
+    }
     constructor(props) {
         super(props);
-        this.state = {
-            recipe: this.props.route.params.recipe
-        }
+        AsyncStorage.getItem('username').then(value =>
+            this.setState({ username: value })
+        );
+        AsyncStorage.getItem('userID').then(value =>
+            {
+                this.setState({ userID: value });
+            }
+        ).then(() => {
+            this.getUserComments()
+            .then(() => {
+                this.setState({ isCommentsLoaded: true });
+            });
+        });
+        
     }
     render() {
         // const {Data} = this.props.route.params.data
         // console.log(this.props.route.params.data)
         return (
-            <ScrollView >
+            <ScrollView style={{backgroundColor:"#E1E8EE"}}>
                 <View>
                     {/* Recipe 1 is a placeholder, Change the name dynamically */}
                     <Text style={{ fontSize: 20, fontWeight: '400',padding: 20, alignSelf: "center" }}> {this.state.recipeName} </Text>
@@ -28,19 +49,43 @@ export class RecipeComponent extends Component {
                     </View>
 
                     {/* Fetch following from backend */}
-                    <Text style={styles.recipe_text}> How to Prepare {this.state.recipe.Name} </Text>
-                    <Text style={styles.recipe_text}> Ingredients: {this.state.recipe.Ingredients}</Text>
-                    <Text style={styles.recipe_text}> Preparation: {this.state.recipe.Preparation}</Text>
-                    <Text style={styles.recipe_text}> Method: {this.state.recipe.Method}</Text>
+                    <Text style={styles.recipe_label}>How to Prepare {this.state.recipe.Name} </Text>
+                    <Text style={styles.recipe_label}>Ingredients: </Text><Text style={styles.recipe_text}> {this.state.recipe.Ingredients}</Text>
+                    <Text style={styles.recipe_label}>Preparation: </Text><Text style={styles.recipe_text}> {this.state.recipe.Preparation}</Text>
+                    <Text style={styles.recipe_label}>Method: </Text><Text style={styles.recipe_text}>{this.state.recipe.Method}</Text>
                 </View>
+                <Text style={{alignSelf:"center", fontWeight:"700"}}>Want to leave a comment? Click Below!</Text>
+                <CommentModal/>
                 <View style={{ width: "90%" }} >
-                    <Text style={styles.recipe_text}> Customer Ratings for {this.state.recipe.Name} </Text>
+                    <Text style={styles.recipe_label}> Customer Ratings for {this.state.recipe.Name} </Text>
 
                     {/* Pass recipe name as params to the CustomerRating component */}
-                    <UserRating />
+                    {/* <UserRating /> */}
+                    <FlatList                
+                    data={this.state.reviews}
+                    renderItem={({ item }) => 
+                    <View style ={styles.rating_style} >
+                        <Text style = {{marginBottom:10, fontWeight: '600'}}> Username: {item.ReviewID} </Text>
+                        <Text style = {{marginBottom:10, fontWeight: '600'}}> Ratings: {item.rating} </Text>
+                        <Text style = {{marginBottom:10, fontWeight: '600'}}> Comments:  </Text>
+                        <Text> {item.comment}</Text>
+                    </View>}
+                    keyExtractor={item => item.id}
+                />
                 </View>
             </ScrollView>
         );
+    }
+
+    getUserComments = () => { 
+        return fetch(env.server+"comment?recipe_name="+this.state.recipe.Name,{
+            method: "GET"
+        })
+        .then((response) => response.json())
+        .then( (json) => {
+            this.setState({ reviews: json });
+            console.log(json)
+        }).catch((error) => console.log(error))
     }
 }
 
@@ -58,6 +103,21 @@ const styles = StyleSheet.create({
         padding: 20,
         fontSize: 18,
         fontWeight: '400'
+    },
+    recipe_label:{
+        padding: 20,
+        fontSize: 18,
+        fontWeight: '700'
+    },
+    rating_style :{
+        width:"90%",
+        borderWidth: 2,
+        borderRadius:5,
+        alignSelf: "center",
+        padding:10,
+        marginLeft:35,
+        marginBottom:10,
+        backgroundColor:"#FEFFFE"
     }
 
 });

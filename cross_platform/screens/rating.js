@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, FlatList, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native'
-import {Rating, AirbnbRating } from 'react-native-elements'
+
 
 // Populate DATA with data from the backend, must include fields: id, comments, username
 // Get the ratings and comments data from the name of the recipe that is passed to this component
@@ -43,11 +43,6 @@ export default class UserRating extends Component {
                     <View style ={styles.rating_style} >
                         <Text style = {{marginBottom:10, fontWeight: '600'}}> Username: {item.username} </Text>
                         <Text style = {{marginBottom:10, fontWeight: '600'}}> Ratings:</Text>
-                        <Rating 
-                            type = "custom"
-                            
-                            ratingBackgroundColor = "#F2F2F2" 
-                        />
                         <Text style = {{marginBottom:10, fontWeight: '600'}}> Comments:</Text>
                         <Text> {item.comment}</Text>
                     </View>}
