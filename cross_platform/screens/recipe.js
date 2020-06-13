@@ -48,7 +48,7 @@ export class RecipeComponent extends Component {
                         <Text style={{ fontSize: 20, fontWeight: '400',padding: 20, alignSelf: "center" }}> {this.state.recipeName} </Text>
                         <View style={{ paddingLeft: 20 }}>
                             <Image
-                                style={{ width: 375, height: 200 }}
+                                style={{ width: 375, height: 200, borderRadius:15 }}
                                 source={this.state.recipe.image}
                             />
                         </View>
@@ -72,7 +72,7 @@ export class RecipeComponent extends Component {
                         renderItem={({ item }) =>
                         
                         <View style ={styles.rating_style} >
-                            <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={require('../assets/profile.png')} />
+                            <Image style={{ margin:5, height:70, width:70, borderRadius: 35 }} source={require('../assets/profile.png')} />
                             <View>
                                 <View style={{flexDirection:"row"}}>
                                     <Text style = {{marginTop:15, fontWeight: '600'}}> User: {item.username} </Text>
@@ -152,11 +152,10 @@ const styles = StyleSheet.create({
     },
     rating_style :{
         width:"90%",
-        
         borderRadius:15,
         alignSelf: "center",
         padding:10,
-        marginLeft:30,
+        marginLeft:25,
         marginBottom:5,
         backgroundColor:"#FEFFFE",
         flex:1,

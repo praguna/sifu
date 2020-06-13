@@ -63,9 +63,10 @@ export class LandingComponent extends Component {
                     <View style={styles.new_section}>
                         <Text> Welcome {this.state.username} </Text>
                         
-                        <View>
+                        <View style={{flexDirection:"row", justifyContent:"space-evenly"}}>
                             <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera',
                             {username:this.state.username, userID:this.state.userID});}} />
+                            <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
                         </View>
                         {/* <Text> Recommended Recipes</Text> */}
                         <SearchBar        

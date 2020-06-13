@@ -47,6 +47,7 @@ export default class CommentModal extends Component {
               <TextInput style={styles.modalTextInput} placeholder="Type your comments here.." onChangeText={this.handleCommentText}/>
               <Rating 
                     type = "custom"
+                    fractions={1}
                     ratingBackgroundColor = "#F2F2F2"
                     onFinishRating={this.ratingCompleted}
               />
