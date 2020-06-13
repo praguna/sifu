@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, FlatList } from "react-native";
 import Constants from "expo-constants";
+import {Rating} from 'react-native-elements';
 import UserRating from "./rating"
 import CommentModal from "./modal";
 import AsyncStorage from '@react-native-community/async-storage'
 import { env } from "../config";
 
 const defimg = require('../assets/default.jpg');
+console.disableYellowBox = true;
 
 export class RecipeComponent extends Component {
     state = {
@@ -14,7 +16,9 @@ export class RecipeComponent extends Component {
         userID: '',
         isCommentsLoaded : false,
         recipe: this.props.route.params.recipe,
-        reviews: []
+        reviews: [],
+        canSubmit:true,
+        uniqueValue: 1
     }
     constructor(props) {
         super(props);
@@ -44,7 +48,7 @@ export class RecipeComponent extends Component {
                         <Text style={{ fontSize: 20, fontWeight: '400',padding: 20, alignSelf: "center" }}> {this.state.recipeName} </Text>
                         <View style={{ paddingLeft: 20 }}>
                             <Image
-                                style={{ width: 375, height: 200 }}
+                                style={{ width: 375, height: 200, borderRadius:15 }}
                                 source={this.state.recipe.image}
                             />
                         </View>
@@ -55,21 +59,28 @@ export class RecipeComponent extends Component {
                         <Text style={styles.recipe_label}>Preparation: </Text><Text style={styles.recipe_text}> {this.state.recipe.Preparation}</Text>
                         <Text style={styles.recipe_label}>Method: </Text><Text style={styles.recipe_text}>{this.state.recipe.Method}</Text>
                     </View>
-                    <Text style={{alignSelf:"center", fontWeight:"700"}}>Want to leave a comment? Click Below!</Text>
-                    <CommentModal recipeName={this.state.recipe.Name} userID={this.state.userID} />
-                    <View style={{ width: "90%" }} >
+                    
+                    {this.checkReviewStatus()}
+                    
+                    <View style={{ width: "95%" }} key={this.state.uniqueValue}>
                         <Text style={styles.recipe_label}> Customer Ratings for {this.state.recipe.Name} </Text>
     
                         {/* Pass recipe name as params to the CustomerRating component */}
                         {/* <UserRating /> */}
                         <FlatList                
                         data={this.state.reviews}
-                        renderItem={({ item }) => 
+                        renderItem={({ item }) =>
+                        
                         <View style ={styles.rating_style} >
-                            <Text style = {{marginBottom:10, fontWeight: '600'}}> Username: {item.ReviewID} </Text>
-                            <Text style = {{marginBottom:10, fontWeight: '600'}}> Ratings: {item.rating} </Text>
-                            <Text style = {{marginBottom:10, fontWeight: '600'}}> Comments:  </Text>
-                            <Text> {item.comment}</Text>
+                            <Image style={{ margin:5, height:70, width:70, borderRadius: 35 }} source={require('../assets/profile.png')} />
+                            <View>
+                                <View style={{flexDirection:"row"}}>
+                                    <Text style = {{marginTop:15, fontWeight: '600'}}> User: {item.username} </Text>
+                                    {/* <Text style = {{marginTop:15, marginLeft:20, fontWeight: '600'}}> Ratings: {item.rating} </Text> */}
+            <Rating imageSize={20} readonly startingValue={item.rating} style = {{marginTop:15, marginLeft:10}}/><Text  style = {{marginTop:15}}>({item.rating})</Text>
+                                </View>
+                            <Text style = {{marginTop:15, fontWeight: '600'}}> Comments:</Text><Text> {item.comment} </Text>
+                            </View>
                         </View>}
                         keyExtractor={item => item.id}
                     />
@@ -86,10 +97,37 @@ export class RecipeComponent extends Component {
         })
         .then((response) => response.json())
         .then( (json) => {
+            json.sort(function(a, b) {
+                return a.timestamp > b.timestamp;
+            });
             this.setState({ reviews: json });
             console.log(json)
+            for (let userObject of json) {
+                if (userObject.ReviewID == this.state.userID){
+                    this.setState({
+                        canSubmit : false
+                    })
+                }
+            }
         }).catch((error) => console.log(error))
     }
+    checkReviewStatus = () => {
+        if(this.state.canSubmit == true){
+            return(
+                <View>
+                <Text style={{alignSelf:"center", fontWeight:"700"}}>Want to leave a review? Click Below!</Text>
+                <CommentModal recipeName={this.state.recipe.Name} userID={this.state.userID} userName={this.state.username} reloadScreen={this.getUserComments}/>
+                </View>
+                )
+        }
+        return (<Text style={{alignSelf:"center", fontWeight:"700"}}>You have already submitted a review.</Text>)
+    }
+    forceRemount = () => {
+        this.setState({
+          uniqueValue: this.state.uniqueValue + 1
+        });
+        console.log("Force remount fired")
+      }
 }
 
 const styles = StyleSheet.create({
@@ -114,13 +152,24 @@ const styles = StyleSheet.create({
     },
     rating_style :{
         width:"90%",
-        borderWidth: 2,
-        borderRadius:5,
+        borderRadius:15,
         alignSelf: "center",
         padding:10,
-        marginLeft:35,
-        marginBottom:10,
-        backgroundColor:"#FEFFFE"
+        marginLeft:25,
+        marginBottom:5,
+        backgroundColor:"#FEFFFE",
+        flex:1,
+        flexDirection: "row",
+    },
+    listitems:{
+        flex:1,
+        flexDirection: "row-reverse",
+        backgroundColor: '#bdc6cf',
+        alignSelf: "center",
+        justifyContent: "flex-end",
+        padding:5,
+        borderRadius:15,
+        width: "80%"
     }
 
 });

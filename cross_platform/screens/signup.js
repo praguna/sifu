@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button, Image, KeyboardAvoidingView, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, Button, Image, KeyboardAvoidingView, ToastAndroid, ImageBackground } from 'react-native';
 import Constants from 'expo-constants';
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import { env } from "../config";
 import AsyncStorage from '@react-native-community/async-storage'
+console.disableYellowBox = true;
 
 export class SignupComponent extends Component{
     state = {
@@ -41,20 +42,20 @@ export class SignupComponent extends Component{
 
     render(){
         return (
-            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null}
-            keyboardVerticalOffset={100}
-            style={{ flex: 1 }} >
-                <View style={styles.login_form_section}>
-                    
-                    <TextInput style={styles.inputbtn} placeholder="Username" onChangeText={this.handleUsername} />
-                    <TextInput style={styles.inputbtn} placeholder="EmailID" onChangeText={this.handleEmail} />
-                    <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Password" onChangeText={this.handlePassword} />
-                    <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Confirm Password" onChangeText={this.handleConfirmPassword} />
-                    <View style={styles.submitbtn} >
-                        <Button title="Submit" onPress={this.handleSignup.bind(this, this.props.navigation, this.state.email, this.state.username)} />
+            // <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null}  keyboardVerticalOffset={100} >
+                <ImageBackground source = {require('../assets/background2.jpg')} style = {styles.bgimg} resizeMode="cover">
+                    <View style={styles.login_form_section}>
+                        
+                        <TextInput style={styles.inputbtn} placeholder="Username" onChangeText={this.handleUsername} />
+                        <TextInput style={styles.inputbtn} placeholder="EmailID" onChangeText={this.handleEmail} />
+                        <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Password" onChangeText={this.handlePassword} />
+                        <TextInput style={styles.inputbtn} secureTextEntry={true} placeholder="Confirm Password" onChangeText={this.handleConfirmPassword} />
+                        <View style={styles.submitbtn} >
+                            <Button title="Submit" onPress={this.handleSignup.bind(this, this.props.navigation, this.state.email, this.state.username)} />
+                        </View>
                     </View>
-                </View>
-            </KeyboardAvoidingView>
+                </ImageBackground>
+            // </KeyboardAvoidingView>
         )
     }
 
@@ -115,10 +116,11 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         margin: 20,
         alignSelf: "center",
-        borderRadius: 10
+        borderRadius: 10,
+        backgroundColor:'rgba(255, 255, 255, 0.9)'
     },
     login_form_section: {
-        marginTop: "40%"
+        marginTop: "30%"
     },
     inputbtn: {
         margin: 10,
@@ -126,11 +128,17 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         width: "80%",
-        alignSelf: "center"
+        alignSelf: "center",
+        backgroundColor:'rgba(255, 255, 255, 0.8)'
     },
     heading :{
         marginVertical: 8,
         marginHorizontal: 16,
         fontSize : 1
+    },
+    bgimg:{
+        height:"100%",
+        width:"100%",
+        opacity: 0.9
     }
   });

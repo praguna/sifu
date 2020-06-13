@@ -47,6 +47,7 @@ export default class CommentModal extends Component {
               <TextInput style={styles.modalTextInput} placeholder="Type your comments here.." onChangeText={this.handleCommentText}/>
               <Rating 
                     type = "custom"
+                    fractions={1}
                     ratingBackgroundColor = "#F2F2F2"
                     onFinishRating={this.ratingCompleted}
               />
@@ -102,11 +103,15 @@ export default class CommentModal extends Component {
             "ReviewID": this.props.userID,
             "rName": this.props.recipeName,
             "rating":this.state.rating,
-            "comment":this.state.userComments
+            "comment":this.state.userComments,
+            "username": this.props.userName
         }),
     })
-    .then( (response) => console.log(response.json()) )
+    .then( (response) => {console.log(response.json()) 
+        this.props.reloadScreen()} )
     .catch((error) => console.log(error))
+
+    
   }
 }
 
