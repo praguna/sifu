@@ -1,34 +1,37 @@
 import React ,{Component} from 'react'
-import {View , FlatList , Text , StyleSheet} from 'react-native'
+import { View, FlatList,ScrollView, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native'
 import Constants from 'expo-constants';
 
 export class DisplayComponent extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            recipes: this.props.route.params.recipes
+            recipes: this.props.route.params.response.recipes
         }
     }
 
     render(){
-        console.log("display")
-        //console.log(this.state.recipes)
         return (
-            <View style={StyleSheet.container}>
-                <Text style = {StyleSheet.heading}> Recommended Recipes : </Text>
-                    <FlatList 
-                        data = {this.state.recipes}
-                        renderItem={({ item })=>
-                                <Text 
-                                style={styles.item}
-                                onPress={() => {
+            <ScrollView style={styles.container}>
+                <View style={StyleSheet.heading}>
+                    <View style={styles.new_section}>
+                        <Text style = {StyleSheet.heading}> Recommended Recipes : </Text>
+                        <FlatList data = {this.state.recipes} 
+                        renderItem = {({item})=><View>
+                            <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
                                     this.props.navigation.push('Recipe', {recipe: item})
-                                    this.props.navigation.navigate('Recipe')
-                                }}
-                                >{item.Name}</Text>
-                        }
-                    />
-            </View>   
+                                }}>
+                                    <View style={styles.listitems}>
+                                        <Text style={{marginTop:36}} >{item.Name}</Text>
+                                        <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={item.image} />
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        }            
+                        />
+                    </View>                    
+                </View>
+            </ScrollView>
         )
     }
 }
@@ -36,18 +39,32 @@ export class DisplayComponent extends Component{
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      marginTop: Constants.statusBarHeight,
+        // flex: 1,
+        // marginTop: Constants.statusBarHeight,
+        backgroundColor:"#E1E8EE",
+        height:"100%",
+        width:"100%"
     },
     item: {
-      backgroundColor: '#f9c2ff',
-      padding: 20,
-      marginVertical: 8,
-      marginHorizontal: 16,
-    },
-    heading :{
+        backgroundColor: '#f9c2ff',
+        padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,
-        fontSize : 1
+    },
+    heading: {
+        fontSize: 1
+    },
+    new_section: {
+        padding: 20,
+    },
+    listitems:{
+        flex:1,
+        flexDirection: "row-reverse",
+        backgroundColor: '#bdc6cf',
+        alignSelf: "center",
+        justifyContent: "flex-end",
+        padding:5,
+        borderRadius:15,
+        width: "80%"
     }
   });

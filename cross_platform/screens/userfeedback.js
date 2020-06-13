@@ -1,6 +1,8 @@
 import React ,{Component} from 'react'
-import {View , Text , StyleSheet} from 'react-native'
+import {View , Text , StyleSheet, Image, Button, Platform, KeyboardAvoidingView, ToastAndroid, TabBarIOS} from 'react-native'
 import Constants from 'expo-constants';
+import { TextInput } from 'react-native-gesture-handler';
+import { env } from "../config";
 export class UserFeedBack extends Component{
     constructor(props){
         super(props)
@@ -8,22 +10,97 @@ export class UserFeedBack extends Component{
             username : this.props.route.params.username,
             userID : this.props.route.params.userID,
             image : this.props.route.params.image,
-            response : this.props.route.params.response
+            response : this.props.route.params.response,
+            text : ""
         }
     }
 
+    handleSubmit = async ()=>{
+        if(this.state.text.trim().length == 0){
+            if(Platform.OS === "android") ToastAndroid.show("Enter a value !", ToastAndroid.LONG);
+            return;
+        }
+        fetch(env.server+"labelByUser", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              image: this.state.image,
+              ingredients: this.state.text,
+            }),
+          }).then(res=>res.json())
+          .then(json=>{
+              if(Platform.OS === "android") ToastAndroid.show(json["message"], ToastAndroid.LONG);
+              this.gotToDisplayPage();
+          }).catch(err=>console.error(err))
+    }
+
+    gotToDisplayPage = ()=>{
+        this.props.navigation.push("Display",{
+            username:this.state.username,
+            userID:this.state.userID,
+            response:this.state.response
+        });
+        this.props.navigation.navigate("Display");
+    }
+
+    renderButtons = ()=>{
+        var ingredients = this.state.response["Ingredients"]
+        if(typeof ingredients !== "undefined"){
+        const map = ingredients.map(ing=>{
+            return <Text style={styles.btntext}>{ing}</Text>
+            })
+         return map
+        }
+        return (
+            <Text style={styles.btntext}> Nothing to display!! </Text>
+        )
+    }
+
     render(){
+        const keyboardVerticalOffset = Platform.OS === 'android' ? 80 : 60
         return(
-            <View style={styles.container}>
-                <Text>I am {this.state.username}!!, Hello world!!</Text>
-            </View>
+            <KeyboardAvoidingView behavior='position' style={styles.container} keyboardVerticalOffset={keyboardVerticalOffset}>
+                <Text style={styles.heading}>Help us improve our Model Perfomance</Text>
+                <Image 
+                style={styles.imagestyle} 
+                source={{uri: `data:image/png;base64,${this.state.image.base64}`}} 
+                />
+                <Text style={styles.subheading}>This is what we predicted :</Text>
+                <View style = {{
+                    flexDirection : "row",
+                    alignItems : "center",
+                    flexWrap: 'wrap'
+                }}>
+                     {this.renderButtons()}
+                </View>
+                <Text style={styles.subheading}>What did we miss?</Text>
+                <TextInput multiline={true} 
+                 numberOfLines={4}
+                 onChangeText={(text) => this.setState({text})}
+                 style={styles.inputbtn} 
+                 placeholder="Enter correct ingredients as Comma Seperated Values"/>
+                 <View style={styles.loginbtn} >
+                <Button 
+                    title="submit"
+                    onPress = {this.handleSubmit}
+                />
+                </View>
+                <View style={styles.skipbtn} >
+                <Button 
+                    title=">> skip"
+                    onPress = {this.gotToDisplayPage}
+                />
+                </View>
+            </KeyboardAvoidingView >
         );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
       marginTop: Constants.statusBarHeight,
     },
     item: {
@@ -33,8 +110,56 @@ const styles = StyleSheet.create({
       marginHorizontal: 16,
     },
     heading :{
-        marginVertical: 8,
+        textAlign : "center",
+        fontWeight: 'bold',
+        fontSize: 18,
+        fontFamily : "sans-serif-medium",
+        textDecorationLine: 'underline',
         marginHorizontal: 16,
-        fontSize : 1
+        color : "blue"
+    },
+    subheading: {
+        textAlign : "left",
+        fontWeight: 'bold',
+        fontSize: 12,
+        fontStyle: 'italic',
+        marginHorizontal: 16,
+        color : "red",
+        marginTop: 15
+    },
+    inputbtn: {
+        margin: 10,
+        padding: 15,
+        borderRadius: 5,
+        width: "80%",
+        marginLeft: 10,
+        backgroundColor:'rgba(255, 255, 255, 0.8)'
+    },
+    imagestyle :{
+        marginHorizontal: 16,
+        marginTop: 16,
+        height:200, 
+        width:200
+    },
+    loginbtn :{
+        width : 100,
+        borderRadius: 20,
+        marginHorizontal:20
+    },
+    skipbtn : {
+        width : 70,
+        fontSize : 5,
+        borderRadius: 20,
+        marginHorizontal:"75%"
+    },
+    btntext : {
+        textAlign : "left",
+        fontWeight: 'bold',
+        fontSize: 12,
+        backgroundColor : 'rgba(121, 203, 77, 1)',
+        color : "white",
+        margin : 10,
+        padding : 10,
+        borderRadius : 10
     }
   });
