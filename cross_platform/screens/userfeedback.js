@@ -3,7 +3,6 @@ import {View , Text , StyleSheet, Image, Button, Platform, KeyboardAvoidingView,
 import Constants from 'expo-constants';
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
-import firebase from '../firebase';
 import { env } from "../config";
 console.disableYellowBox = true;
 
@@ -62,12 +61,6 @@ export class UserFeedBack extends Component{
             <Text style={styles.btntext}> Nothing to display!! </Text>
         )
     }
-    handleSignout = (navigation) => {
-        firebase.auth().signOut().then(function () {
-            navigation.dispatch(StackActions.replace('Login'))
-        })
-        console.log("Signed Out Successfully!")
-    }
 
     render(){
         const keyboardVerticalOffset = Platform.OS === 'android' ? 80 : 60
@@ -75,7 +68,6 @@ export class UserFeedBack extends Component{
             <KeyboardAvoidingView style={{backgroundColor:"#E1E8EE"}} behavior='position'  keyboardVerticalOffset={keyboardVerticalOffset}>
                 <View style={{flexDirection:"row", justifyContent:"space-evenly", marginTop:20,marginBottom:20}}>
                             <Button title="Home" onPress={() => { this.props.navigation.dispatch(StackActions.replace('Landing'))}} />
-                            <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
                 </View>
                 <Text style={styles.heading}>Help us improve our Model Perfomance</Text>
                 <Image 

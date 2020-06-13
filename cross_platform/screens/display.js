@@ -2,7 +2,6 @@ import React ,{Component} from 'react'
 import { View, FlatList,ScrollView, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native'
 import Constants from 'expo-constants';
 import { StackActions } from '@react-navigation/native';
-import firebase from '../firebase';
 console.disableYellowBox = true;
 
 export class DisplayComponent extends Component{
@@ -13,12 +12,6 @@ export class DisplayComponent extends Component{
         }
     }
 
-    handleSignout = (navigation) => {
-        firebase.auth().signOut().then(function () {
-            navigation.dispatch(StackActions.replace('Login'))
-        })
-        console.log("Signed Out Successfully!")
-    }
 
     render(){
         return (
@@ -27,7 +20,7 @@ export class DisplayComponent extends Component{
                     <View style={styles.new_section}>
                         <View style={{flexDirection:"row", justifyContent:"space-evenly", marginBottom:20}}>
                             <Button title="Home" onPress={() => { this.props.navigation.dispatch(StackActions.replace('Landing'))}} />
-                            <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} />
+                            {/* <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} /> */}
                         </View>
                         <Text style = {StyleSheet.heading}> Recommended Recipes : </Text>
                         <FlatList data = {this.state.recipes} 
