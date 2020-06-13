@@ -78,7 +78,7 @@ def get_items(df,recipes,ingredients = None):
     
 
 def get_filtered_items(recipes , ingredients):
-    ingredients = ['chilli', 'lemon', 'potato','coconut']
+    # ingredients = ['chilli', 'lemon', 'potato','coconut']
     filtered_items = []
     for recipe in recipes:
         count = 0
