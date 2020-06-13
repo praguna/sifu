@@ -3,6 +3,8 @@ import {View , Text , StyleSheet, Image, Button, Platform, KeyboardAvoidingView,
 import Constants from 'expo-constants';
 import { TextInput } from 'react-native-gesture-handler';
 import { env } from "../config";
+console.disableYellowBox = true;
+
 export class UserFeedBack extends Component{
     constructor(props){
         super(props)
@@ -72,7 +74,7 @@ export class UserFeedBack extends Component{
                 <Text style={styles.subheading}>This is what we predicted :</Text>
                 <View style = {{
                     flexDirection : "row",
-                    alignItems : "center",
+                    alignSelf : "center",
                     flexWrap: 'wrap'
                 }}>
                      {this.renderButtons()}
@@ -83,18 +85,21 @@ export class UserFeedBack extends Component{
                  onChangeText={(text) => this.setState({text})}
                  style={styles.inputbtn} 
                  placeholder="Enter correct ingredients as Comma Seperated Values"/>
-                 <View style={styles.loginbtn} >
-                <Button 
-                    title="submit"
-                    onPress = {this.handleSubmit}
-                />
+                 <View style={styles.buttons}>
+                    <View style={styles.loginbtn} >
+                        <Button 
+                            title="Submit"
+                            onPress = {this.handleSubmit}
+                        />
+                    </View>
+                    <View style={styles.skipbtn} >
+                        <Button 
+                            title=">> Skip"
+                            onPress = {this.gotToLandingPage}
+                        />
+                    </View>
                 </View>
-                <View style={styles.skipbtn} >
-                <Button 
-                    title=">> skip"
-                    onPress = {this.gotToLandingPage}
-                />
-                </View>
+                <Text style={styles.subheading}>Skip ahead to see recommended recipes.</Text>
             </KeyboardAvoidingView >
         );
     }
@@ -126,7 +131,8 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         marginHorizontal: 16,
         color : "red",
-        marginTop: 15
+        marginTop: 15,
+        alignSelf: "center"
     },
     inputbtn: {
         margin: 10,
@@ -134,24 +140,30 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         width: "80%",
         marginLeft: 10,
-        backgroundColor:'rgba(255, 255, 255, 0.8)'
+        backgroundColor:'rgba(255, 255, 255, 0.8)',
+        alignSelf: "center"
     },
     imagestyle :{
         marginHorizontal: 16,
         marginTop: 16,
         height:200, 
-        width:200
+        width:200,
+        alignSelf: "center"
+    },
+    buttons:{
+        flexDirection: "row",
+        justifyContent: "space-evenly"
     },
     loginbtn :{
         width : 100,
         borderRadius: 20,
-        marginHorizontal:20
+        paddingTop:10,
     },
     skipbtn : {
-        width : 70,
+        width : 80,
         fontSize : 5,
         borderRadius: 20,
-        marginHorizontal:"75%"
+        paddingTop:10
     },
     btntext : {
         textAlign : "left",

@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { env } from "../config";
 
 const defimg = require('../assets/default.jpg');
+console.disableYellowBox = true;
 
 export class RecipeComponent extends Component {
     state = {

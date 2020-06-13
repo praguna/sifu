@@ -6,6 +6,7 @@ import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import { env } from "../config";
 import AsyncStorage from '@react-native-community/async-storage'
+console.disableYellowBox = true;
 
 export class SignupComponent extends Component{
     state = {

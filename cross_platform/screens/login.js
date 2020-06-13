@@ -7,6 +7,7 @@ import firebase from '../firebase';
 import { env } from "../config";
 import AsyncStorage from '@react-native-community/async-storage'
 
+console.disableYellowBox = true;
 
 export class LoginComponent extends Component {
     state = {

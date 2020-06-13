@@ -1,6 +1,7 @@
 import React ,{Component} from 'react'
 import {View , FlatList , Text , StyleSheet} from 'react-native'
 import Constants from 'expo-constants';
+console.disableYellowBox = true;
 
 export class DisplayComponent extends Component{
     constructor(props) {

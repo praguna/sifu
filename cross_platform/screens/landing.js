@@ -8,6 +8,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { env } from "../config";
 // import { ScrollView } from 'react-native-gesture-handler';
 
+console.disableYellowBox = true;
+
 export class LandingComponent extends Component {
 
     state = {
@@ -60,7 +62,7 @@ export class LandingComponent extends Component {
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
                         <Text> Welcome {this.state.username} </Text>
-                        <Text> Recommended Recipes : </Text>
+                        
                         <View>
                             <Button title="Take a Picture" onPress={() => { this.props.navigation.navigate('Camera',
                             {username:this.state.username, userID:this.state.userID});}} />
@@ -74,6 +76,7 @@ export class LandingComponent extends Component {
                             autoCorrect={false} 
                             value={search}            
                         />
+                        <Text style ={{alignSelf:"center"}} > Recommended Recipes : </Text>
                         <FlatList data = {this.state.recipes} 
                             renderItem = {({item})=><View>
                                 <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
@@ -87,7 +90,7 @@ export class LandingComponent extends Component {
                                 </View>
 
                             }
-                            
+                            keyExtractor={item => item.Name}
             />
                         
                     </View>                    

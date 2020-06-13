@@ -22,7 +22,7 @@ export default class SifuMobileApp extends PureComponent {
         <Stack.Screen name = "Camera" component={CameraComponent}/>
         <Stack.Screen name = "Display" component={DisplayComponent}/>
         <Stack.Screen name = "Signup" component={SignupComponent}/>
-        <Stack.Screen name = "UserFeedBack" component={UserFeedBack}/>
+        <Stack.Screen name = "UserFeedBack" component={UserFeedBack} options={{title:'User Feedback'}}/>
        </Stack.Navigator>
       </NavigationContainer>
     );
