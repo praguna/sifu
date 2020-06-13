@@ -14,6 +14,7 @@ export class DisplayComponent extends Component{
 
 
     render(){
+        if(this.state.recipes.length > 0){
         return (
             <ScrollView style={styles.container}>
                 <View style={StyleSheet.heading}>
@@ -40,6 +41,20 @@ export class DisplayComponent extends Component{
                 </View>
             </ScrollView>
         )
+        } else{
+            return (
+            <ScrollView style={styles.container}>
+                <View style={StyleSheet.heading}>
+                    <View style={styles.new_section}>
+                        <View style={{flexDirection:"row", justifyContent:"space-evenly", marginBottom:20}}>
+                            <Button title="Home" onPress={() => { this.props.navigation.dispatch(StackActions.replace('Landing'))}} />
+                        </View>
+                        <Text style = {StyleSheet.heading, {marginTop:36}}> Sorry we could not find any result for your image </Text>
+                    </View>                    
+                </View>
+            </ScrollView>
+            )
+        }
     }
 }
 
