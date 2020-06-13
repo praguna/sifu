@@ -74,6 +74,8 @@ def predict(image):
 
 def recommend(ingredients,user_id):
     global recipes , recommendation_data, reco_model, user ,item, output_layer
+    if ingredients and  len(ingredients) == 0: 
+        ingredients = None
     if recommendation_data is None:
             data_path = os.path.join(os.getcwd(), "saved_models", "recommendation", "recomendation_data.pkl")
             recommendation_data =  pd.read_pickle(data_path)   
@@ -81,13 +83,13 @@ def recommend(ingredients,user_id):
        recipes = fetch_recipes(mongoClient)
     with graph2.as_default():
         with reco_session.as_default():
-            items = get_items(recommendation_data , recipes ,ingredients)
+            items,filtered_count = get_items(recommendation_data , recipes ,ingredients)
             feed_dict = {
                 user : np.full(len(items),user_id).reshape(-1,1),
                 item : np.array(items).reshape(-1,1)
             }
             orginal = reco_session.run([output_layer],feed_dict)
-            preds = format_predictions(orginal , items)
+            preds = format_predictions(orginal , items, filtered_count)
             res = response_dictionary(recipes,preds,user_id)
             return preds
 #########################################################################################################
@@ -140,12 +142,6 @@ class Application(Resource):
         data = request.get_json()
         converted_image = self.convert_to_image(data['data'])
         pred = predict(converted_image)
-        if len(pred) == 0:
-            response = {
-                "recipes": [],
-                "Ingredients": []
-            }
-            return jsonify(response)
         return self.get_json_response(data['uid'], pred)
 
     def convert_to_image(self,data):

@@ -65,6 +65,7 @@ def fetch_recipes(client):
 
 def get_items(df,recipes,ingredients = None):
     global item_dict , ids_dict
+    filtered_count = None
     if item_dict is None: 
         item_dict = df[['item','item_id']].set_index('item_id').to_dict()['item']
     if ids_dict is None:
@@ -73,8 +74,8 @@ def get_items(df,recipes,ingredients = None):
         items = [recipe['Name'] for recipe in recipes]
         items = [ids_dict[x] for x in items if x in ids_dict.keys()]
     else:  
-        items = get_filtered_items(recipes , ingredients)
-    return items
+        items,filtered_count = get_filtered_items(recipes , ingredients)
+    return items,filtered_count
     
 
 def get_filtered_items(recipes , ingredients):
@@ -87,12 +88,28 @@ def get_filtered_items(recipes , ingredients):
                 count+=1
         if count > 0:  filtered_items.append((recipe['Name'] , count))
     filtered_items.sort(reverse=True, key = lambda x : x[-1])
+    filtered_count = []
     items = [ids_dict[x[0]] for x in filtered_items if x[0] in ids_dict.keys()]
-    return items
+    filtered_count = [x for x in filtered_items if x[0] in ids_dict.keys()]
+    return items,filtered_count
 
-def format_predictions(predictions, items):
+def format_predictions(predictions, items, filtered_count=None):
     predictions = list(predictions[0].flatten())
     predictions = [(x,item_dict[y]) for x,y in zip(predictions , items)]
+    result = []
+    if filtered_count:
+        new_dict = {}
+        for i,x in enumerate(filtered_count):
+           try:  new_dict[x[-1]].append(predictions[i])
+           except KeyError:  new_dict[x[-1]] = [predictions[i]]
+        k = list(new_dict.keys()).sort(reverse=True)
+        for k in new_dict:
+            new_dict[k].sort(reverse = True, key = lambda x : x[0])
+            result.extend(new_dict[k])
+        # print(new_dict)
+        # print("-------------------------")
+        print("Recommended : ",result)
+        return result
     predictions.sort(reverse=True, key = lambda x : x[0])
     return predictions
 
