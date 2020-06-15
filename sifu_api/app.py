@@ -52,7 +52,7 @@ def load_init():
         saver = tf.train.Saver()
         reco_session = tf.Session()
         with reco_session.as_default():
-            reco_path =  os.path.join(os.getcwd(),"saved_models","recommendation","NeuMF\\")
+            reco_path =  os.path.join(os.getcwd(),"saved_models","recommendation","NeuMF/")
             saver.restore(reco_session , reco_path)  
 
 #Use only one instance of MongoClient throughout application
@@ -193,4 +193,4 @@ api.add_resource(AllRecipes, '/search')
 # driver function 
 if __name__ == '__main__': 
     load_init()
-    app.run(host="0.0.0.0",port=5000,debug = True)
+    app.run(host="0.0.0.0",port=5000)

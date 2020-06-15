@@ -1,6 +1,9 @@
 flask
-tensorflow==1.14
+tensorflow==1.14.0
 keras==2.2.5
 flask_restful
 boto3
 pymongo
+pillow==5.3.0
+numpy==1.17.4
+pandas
