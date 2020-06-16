@@ -71,7 +71,7 @@ export class UserFeedBack extends Component{
     render(){
         const keyboardVerticalOffset = Platform.OS === 'android' ? 80 : 60
         return(
-            <KeyboardAvoidingView style={{backgroundColor:"#E1E8EE"}} behavior='position'  keyboardVerticalOffset={keyboardVerticalOffset}>
+            <KeyboardAvoidingView style={{backgroundColor:"#E1E8EE", height:"100%", width:"100%"}} behavior='position'  keyboardVerticalOffset={keyboardVerticalOffset}>
                 <Loader loading={this.state.loading}/>
                 <View style={{flexDirection:"row", justifyContent:"space-evenly", marginTop:20,marginBottom:20}}>
                             <Button title="Home" onPress={() => { this.props.navigation.dispatch(StackActions.replace('Landing'))}} />
