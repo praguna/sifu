@@ -5,7 +5,8 @@ import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import { env } from "../config";
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-community/async-storage';
+import Loader from './loader';
 console.disableYellowBox = true;
 
 export class SignupComponent extends Component{
@@ -13,7 +14,8 @@ export class SignupComponent extends Component{
         username: "",
         email: "",
         password: "",
-        confirmpassword: ""
+        confirmpassword: "",
+        loading:false
     }
 
     handleUsername = (e) => {
@@ -44,6 +46,7 @@ export class SignupComponent extends Component{
         return (
             // <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null}  keyboardVerticalOffset={100} >
                 <ImageBackground source = {require('../assets/background2.jpg')} style = {styles.bgimg} resizeMode="cover">
+                    <Loader loading ={this.state.loading} />
                     <View style={styles.login_form_section}>
                         
                         <TextInput style={styles.inputbtn} placeholder="Username" onChangeText={this.handleUsername} />
@@ -61,6 +64,9 @@ export class SignupComponent extends Component{
 
     handleSignup = (navigation, email, username) => {
         var flag = true;
+        this.setState({
+            loading:true
+        })
         try {
 
             if(this.state.password !== this.state.confirmpassword){

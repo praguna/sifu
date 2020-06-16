@@ -4,15 +4,22 @@ import Constants from 'expo-constants';
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
+import Loader from './loader';
 import { env } from "../config";
 import AsyncStorage from '@react-native-community/async-storage'
+import { ThemeConsumer } from 'react-native-elements';
 
 console.disableYellowBox = true;
 
 export class LoginComponent extends Component {
+    constructor(props){
+        super(props);
+        this.onAuthSuccess = this.onAuthSuccess.bind(this);
+    }
     state = {
         email: "",
         password: "",
+        loading: false,
         // there is three ways to adjust (position , height , padding )
     }
 
@@ -28,8 +35,17 @@ export class LoginComponent extends Component {
         })
     }
 
+    onAuthSuccess = () => {
+        this.setState({
+            loading: false
+        })
+    }
+
     handleSubmit = (navigation, email, password) => {
         var flag = true
+        this.setState({
+            loading:true
+        })
         firebase.auth().signInWithEmailAndPassword(email, password)
             .catch(function (error) {
                 // Handle Errors here.
@@ -42,14 +58,14 @@ export class LoginComponent extends Component {
                 fetch(env.server+"registerUser?email="+email, {
                     method: "GET"
                 })
-                .then((response) => response.json())
+                .then((response) =>response.json())
                 .then((json) => {
                     AsyncStorage.setItem('username', json.username);
                     AsyncStorage.setItem('userID', json.userID).then((token) => {
                         if (flag) {
                             // navigation.navigate("Landing")
                             navigation.dispatch(StackActions.replace('Landing'))
-                            ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
+                            // ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
                         }
                     });
                 });
@@ -60,6 +76,7 @@ export class LoginComponent extends Component {
         const keyboardVerticalOffset = Platform.OS === 'android' ? 80 : 60
         return (
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null} keyboardVerticalOffset={keyboardVerticalOffset} >
+                <Loader loading={this.state.loading} />
                 <ImageBackground source = {require('../assets/background2.jpg')} style = {styles.bgimg} resizeMode="cover">
                 
 

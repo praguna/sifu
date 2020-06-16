@@ -4,7 +4,9 @@ import Constants from 'expo-constants';
 import { TextInput } from 'react-native-gesture-handler';
 import { StackActions } from '@react-navigation/native';
 import { env } from "../config";
+import Loader from './loader';
 console.disableYellowBox = true;
+
 
 export class UserFeedBack extends Component{
     constructor(props){
@@ -14,11 +16,13 @@ export class UserFeedBack extends Component{
             userID : this.props.route.params.userID,
             image : this.props.route.params.image,
             response : this.props.route.params.response,
-            text : ""
+            text : "",
+            loading:false
         }
     }
 
     handleSubmit = async ()=>{
+        this.setState({loading:true})
         if(this.state.text.trim().length == 0){
             if(Platform.OS === "android") ToastAndroid.show("Enter a value !", ToastAndroid.LONG);
             return;
@@ -36,12 +40,14 @@ export class UserFeedBack extends Component{
           }).then(res=>res.json())
           .then(json=>{
               if(Platform.OS === "android") ToastAndroid.show(json["message"], ToastAndroid.LONG);
+              
               this.gotToDisplayPage();
           }).catch(err=>console.error(err))
     }
 
     gotToDisplayPage = ()=>{
-        this.props.navigation.push("Display",{
+        this.setState({loading:false})
+        this.props.navigation.navigate("Display",{
             username:this.state.username,
             userID:this.state.userID,
             response:this.state.response
@@ -66,6 +72,7 @@ export class UserFeedBack extends Component{
         const keyboardVerticalOffset = Platform.OS === 'android' ? 80 : 60
         return(
             <KeyboardAvoidingView style={{backgroundColor:"#E1E8EE"}} behavior='position'  keyboardVerticalOffset={keyboardVerticalOffset}>
+                <Loader loading={this.state.loading}/>
                 <View style={{flexDirection:"row", justifyContent:"space-evenly", marginTop:20,marginBottom:20}}>
                             <Button title="Home" onPress={() => { this.props.navigation.dispatch(StackActions.replace('Landing'))}} />
                 </View>
