@@ -6,6 +6,7 @@ import { StackActions } from '@react-navigation/native';
 import firebase from '../firebase';
 import AsyncStorage from '@react-native-community/async-storage'
 import { env } from "../config";
+import Loader from './loader';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 console.disableYellowBox = true;
@@ -20,7 +21,8 @@ export class LandingComponent extends Component {
         recipes: [],
         recommendedRecipes: [],
         search: '',
-        searchData: []
+        searchData: [],
+        loading:false
     }
 
     constructor(props){  
@@ -59,6 +61,7 @@ export class LandingComponent extends Component {
         if(this.state.isLoaded){
         return (
             <ScrollView style={styles.container}>
+                <Loader loading = {this.state.loading}/>
                 <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
                         <Text> Welcome {this.state.username} </Text>
@@ -81,7 +84,8 @@ export class LandingComponent extends Component {
                         <FlatList data = {this.state.recipes} 
                             renderItem = {({item})=><View>
                                 <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
-                                        this.props.navigation.push('Recipe', {recipe: item})
+                                    // this.setState({loading:true})
+                                    this.props.navigation.navigate('Recipe', {recipe: item})
                                     }}>
                                         <View style={styles.listitems}>
                                             <Text style={{marginTop:36}} >{item.Name}</Text>
