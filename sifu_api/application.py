@@ -80,7 +80,7 @@ def recommend(ingredients,user_id):
             data_path = os.path.join(os.getcwd(), "saved_models", "recommendation", "recomendation_data.pkl")
             recommendation_data =  pd.read_pickle(data_path)   
     if recipes is None:
-       recipes = fetch_recipes(mongoClient)
+       recipes = fetch_recipes()
     with graph2.as_default():
         with reco_session.as_default():
             items,filtered_count = get_items(recommendation_data , recipes ,ingredients)
@@ -153,6 +153,7 @@ class Application(Resource):
     
     def get_json_response(self,uid,pred=None):
         res = recommend(pred, uid)[:self.max_recommend]
+        mongoClient = pymongo.MongoClient(atlas_connection_string)
         db = mongoClient['food']
         collection = db['south_Indian_recipes']
         response = {
