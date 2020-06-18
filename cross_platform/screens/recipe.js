@@ -28,7 +28,7 @@ export class RecipeComponent extends Component {
         this.setState({loading:global.loading})
         AsyncStorage.getItem('username').then(value =>
             this.setState({ username: value })
-        );
+        ).catch(err=>console.error(err));
         AsyncStorage.getItem('userID').then(value => {
             this.setState({ userID: value });
         }
@@ -38,7 +38,7 @@ export class RecipeComponent extends Component {
                     // this.setState({loading:false})
                     this.setState({ isCommentsLoaded: true });
                 });
-        });
+        }).catch(err=>console.error(err));
 
     }
     render() {
@@ -46,33 +46,26 @@ export class RecipeComponent extends Component {
         // console.log(this.props.route.params.data)
         if (this.state.isCommentsLoaded) {
             return (
-                <ScrollView style={{ backgroundColor: "#E1E8EE" }}>
+                <View style={{ backgroundColor: "#E1E8EE" }}>
                     <Loader loading = {this.state.loading} />
-                    <View>
-                        {/* Recipe 1 is a placeholder, Change the name dynamically */}
-                        <Text style={{ fontSize: 20, fontWeight: '400', padding: 20, alignSelf: "center" }}> {this.state.recipeName} </Text>
-                        <View style={{ paddingLeft: 20 }}>
-                            <Image
-                                style={{ width: 375, height: 200, borderRadius: 15 }}
-                                source={this.state.recipe.image}
-                            />
-                        </View>
-
-                        {/* Fetch following from backend */}
-                        <Text style={styles.recipe_label}>How to Prepare {this.state.recipe.Name} </Text>
-                        <Text style={styles.recipe_label}>Ingredients: </Text><Text style={styles.recipe_text}> {this.state.recipe.Ingredients}</Text>
-                        <Text style={styles.recipe_label}>Preparation: </Text><Text style={styles.recipe_text}> {this.state.recipe.Preparation}</Text>
-                        <Text style={styles.recipe_label}>Method: </Text><Text style={styles.recipe_text}>{this.state.recipe.Method}</Text>
+                    <Text style={styles.recipe_label, { fontSize: 20, fontWeight: '400', padding: 10, alignSelf: "center" }}> {this.state.recipe.Name} </Text>
+                    <View style={{ paddingLeft: 20 }}>
+                        <Image
+                            style={{ width: 375, height: 200, borderRadius: 15 }}
+                            source={this.state.recipe.image}
+                        />
                     </View>
-
-                    {this.checkReviewStatus()}
-
-                    <View style={{ width: "95%" }} key={this.state.uniqueValue}>
-                        <Text style={styles.recipe_label}> Customer Ratings for {this.state.recipe.Name} </Text>
-
-                        {/* Pass recipe name as params to the CustomerRating component */}
-                        {/* <UserRating /> */}
+                    <View style={{ width: "95%", height: "63%" }} key={this.state.uniqueValue}>
                         <FlatList
+                            ListHeaderComponent={
+                                <>
+                                <Text style={styles.recipe_label}>How to Prepare {this.state.recipe.Name} </Text>
+                                <Text style={styles.recipe_label}>Ingredients: </Text><Text style={styles.recipe_text}> {this.state.recipe.Ingredients}</Text>
+                                <Text style={styles.recipe_label}>Preparation: </Text><Text style={styles.recipe_text}> {this.state.recipe.Preparation}</Text>
+                                <Text style={styles.recipe_label}>Method: </Text><Text style={styles.recipe_text}>{this.state.recipe.Method}</Text>
+                                <Text style={styles.recipe_label}> Customer Ratings for {this.state.recipe.Name} </Text>
+                                {this.checkReviewStatus()}
+                                </>}
                             data={this.state.reviews}
                             renderItem={({ item }) =>
 
@@ -90,10 +83,14 @@ export class RecipeComponent extends Component {
                             keyExtractor={item => item.id}
                         />
                     </View>
-                </ScrollView>
+                </View>
             );
         }
-        return null
+        return (
+            <View style={StyleSheet.container}>
+            <Loader loading={true} />
+            </View>
+        );
     }
 
     getUserComments = () => {

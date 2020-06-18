@@ -2,6 +2,7 @@ import { Camera } from "expo-camera";
 import React, { Component } from "react";
 import * as Permissions from "expo-permissions";
 import { Platform, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import Loader from './loader';
 import {
   FontAwesome,
   Ionicons,
@@ -13,7 +14,7 @@ import { env } from "../config";
 export function Status({ show }) {
   if (show)
     return (
-      <ActivityIndicator size="large" color="#ffffff" />
+      <Loader loading={true} />
     );
   else {
     return <Text></Text>;

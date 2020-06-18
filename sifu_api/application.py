@@ -142,6 +142,12 @@ class Application(Resource):
         data = request.get_json()
         converted_image = self.convert_to_image(data['data'])
         pred = predict(converted_image)
+        if len(pred) == 0:
+            response = {
+                "recipes": [],
+                "Ingredients": []
+            }
+            return jsonify(response)
         return self.get_json_response(data['uid'], pred)
 
     def convert_to_image(self,data):
