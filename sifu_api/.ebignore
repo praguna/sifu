@@ -1,0 +1,6 @@
+.vscode/*
+__pycache__/*
+Dockerfile
+.dockerignore
+test_image.jpg
+virt

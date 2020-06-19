@@ -1,3 +1,3 @@
 export const env = {
-    server : "http://18.222.233.117:5000/" // server
+    server : "http://ec2-3-15-169-252.us-east-2.compute.amazonaws.com:5000/" // server
 }

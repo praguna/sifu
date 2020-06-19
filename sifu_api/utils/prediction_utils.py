@@ -1,6 +1,8 @@
 import numpy as np
 import pymongo
 from pymongo import MongoClient
+from utils.config import *
+
 Labels = ['tomato',
  'onion',
  'chilli',
@@ -58,7 +60,8 @@ def recognised_ingredients(pred):
         if x >= 0.90: result.append(labels[i])
     return result
 
-def fetch_recipes(client):
+def fetch_recipes():
+    client = MongoClient(atlas_connection_string)
     db = client["food"]
     recipe_collection = db["south_Indian_recipes"]
     return list(recipe_collection.find())

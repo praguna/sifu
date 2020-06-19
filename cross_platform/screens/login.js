@@ -68,7 +68,7 @@ export class LoginComponent extends Component {
                             // ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
                         }
                     });
-                });
+                }).catch(err=>console.error(err));
             })
     }
 

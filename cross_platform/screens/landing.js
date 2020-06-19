@@ -38,7 +38,7 @@ export class LandingComponent extends Component {
 
         AsyncStorage.getItem('username').then(value =>
             this.setState({ username: value })
-        );
+        ).catch(err=>console.error(err));
         AsyncStorage.getItem('userID').then(value =>
             {
                 this.setState({ userID: value });
@@ -48,21 +48,20 @@ export class LandingComponent extends Component {
             .then(() => {
                 this.setState({ isLoaded: true });
             });
-        });
+        }).catch(err=>console.error(err));
     }
     handleSignout = (navigation) => {
         firebase.auth().signOut().then(function () {
             navigation.dispatch(StackActions.replace('Login'))
-        })
+        }).catch(err=>console.error(err))
         console.log("Signed Out Successfully!")
     }
     render() {
         const { search } = this.state;
         if(this.state.isLoaded){
         return (
-            <ScrollView style={styles.container}>
-                <Loader loading = {this.state.loading}/>
-                <View style={StyleSheet.heading}>
+                <View style={StyleSheet.heading, styles.container}>
+                    <Loader loading = {this.state.loading}/>
                     <View style={styles.new_section}>
                         <Text> Welcome {this.state.username} </Text>
                         
@@ -80,8 +79,12 @@ export class LandingComponent extends Component {
                             autoCorrect={false} 
                             value={search}            
                         />
-                        <Text style ={{alignSelf:"center"}} > Recommended Recipes : </Text>
-                        <FlatList data = {this.state.recipes} 
+                        <FlatList
+                            ListHeaderComponent={
+                                <>
+                                    <Text style ={{alignSelf:"center"}} > Recommended Recipes : </Text>
+                                </>} 
+                            data = {this.state.recipes} 
                             renderItem = {({item})=><View>
                                 <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
                                     // this.setState({loading:true})
@@ -100,12 +103,13 @@ export class LandingComponent extends Component {
                         
                     </View>                    
                 </View>
-
-                
-            </ScrollView>
         )
         }
-        return null
+        return (
+            <View style={StyleSheet.container}>
+            <Loader loading={true} />
+            </View>
+        );
     }
 
     getPopularRecipeImages = () => { 
@@ -132,7 +136,7 @@ export class LandingComponent extends Component {
             }else {
                 this.setState({ recipes: json.queryResult }); 
             }
-        }) 
+        }).catch(err=>console.error(err))
       };
 }
 

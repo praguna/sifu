@@ -16,15 +16,18 @@ export class DisplayComponent extends Component{
     render(){
         if(this.state.recipes.length > 0){
         return (
-            <ScrollView style={styles.container}>
-                <View style={StyleSheet.heading}>
+                <View style={StyleSheet.heading, styles.container}>
                     <View style={styles.new_section}>
                         <View style={{flexDirection:"row", justifyContent:"space-evenly", marginBottom:20}}>
                             <Button title="Home" onPress={() => { this.props.navigation.dispatch(StackActions.replace('Landing'))}} />
                             {/* <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} /> */}
                         </View>
-                        <Text style = {StyleSheet.heading}> Recommended Recipes : </Text>
-                        <FlatList data = {this.state.recipes} 
+                        <FlatList 
+                        ListHeaderComponent={
+                            <>
+                                <Text style ={{alignSelf:"center"}} > Recommended Recipes : </Text>
+                            </>} 
+                        data = {this.state.recipes} 
                         renderItem = {({item})=><View>
                             <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
                                     this.props.navigation.push('Recipe', {recipe: item})
@@ -35,24 +38,22 @@ export class DisplayComponent extends Component{
                                     </View>
                                 </TouchableOpacity>
                             </View>
-                        }            
+                        }
+                        keyExtractor={item => item.Name}            
                         />
                     </View>                    
                 </View>
-            </ScrollView>
         )
         } else{
             return (
-            <ScrollView style={styles.container}>
-                <View style={StyleSheet.heading}>
+                <View style={StyleSheet.heading, styles.container}>
                     <View style={styles.new_section}>
                         <View style={{flexDirection:"row", justifyContent:"space-evenly", marginBottom:20}}>
                             <Button title="Home" onPress={() => { this.props.navigation.dispatch(StackActions.replace('Landing'))}} />
                         </View>
-                        <Text style = {StyleSheet.heading, {marginTop:36}}> Sorry we could not find any result for your image </Text>
+                        <Text style = {StyleSheet.heading, {marginTop:36}}> Sorry! We could not find any result for your image.</Text>
                     </View>                    
                 </View>
-            </ScrollView>
             )
         }
     }
