@@ -24,6 +24,10 @@ export class RecipeComponent extends Component {
     }
     constructor(props) {
         super(props);
+
+    }
+
+    componentDidMount() {
         global.loading = false
         this.setState({loading:global.loading})
         AsyncStorage.getItem('username').then(value =>
@@ -35,11 +39,9 @@ export class RecipeComponent extends Component {
         ).then(() => {
             this.getUserComments()
                 .then(() => {
-                    // this.setState({loading:false})
                     this.setState({ isCommentsLoaded: true });
                 });
         }).catch(err=>console.error(err));
-
     }
     render() {
         // const {Data} = this.props.route.params.data

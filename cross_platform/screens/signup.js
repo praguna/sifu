@@ -87,7 +87,7 @@ export class SignupComponent extends Component{
                 this.setState({
                     loading:false
                 });
-            });
+            }).then((result) => {
             if(flag){
                 fetch(env.server+"registerUser", {
                     method: "POST",
@@ -114,6 +114,7 @@ export class SignupComponent extends Component{
                     }
                 })
             }
+        })
         } catch (error){
             ToastAndroid.show(error.message, ToastAndroid.SHORT);
         }

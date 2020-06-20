@@ -57,23 +57,22 @@ export class LoginComponent extends Component {
                 this.setState({
                     loading:false
                 })
+            }).then((result) => {
+                if(flag){
+                    fetch(env.server+"registerUser?email="+email, {
+                        method: "GET"
+                    })
+                    .then((response) =>response.json())
+                    .then((json) => {
+                        AsyncStorage.setItem('username', json.username);
+                        AsyncStorage.setItem('userID', json.userID).then((token) => {
+                            if (flag) {
+                                navigation.dispatch(StackActions.replace('Landing'))
+                            }
+                        });
+                    }).catch(err=>console.error(err));
+                }
             })
-            if(flag){
-                fetch(env.server+"registerUser?email="+email, {
-                    method: "GET"
-                })
-                .then((response) =>response.json())
-                .then((json) => {
-                    AsyncStorage.setItem('username', json.username);
-                    AsyncStorage.setItem('userID', json.userID).then((token) => {
-                        if (flag) {
-                            // navigation.navigate("Landing")
-                            navigation.dispatch(StackActions.replace('Landing'))
-                            // ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
-                        }
-                    });
-                }).catch(err=>console.error(err));
-            }
     }
 
     render() {
