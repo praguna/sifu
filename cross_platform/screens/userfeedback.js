@@ -58,8 +58,8 @@ export class UserFeedBack extends Component{
     renderButtons = ()=>{
         var ingredients = this.state.response["Ingredients"]
         if(typeof ingredients !== "undefined"){
-        const map = ingredients.map(ing=>{
-            return <Text style={styles.btntext}>{ing}</Text>
+        const map = ingredients.map((ing, key)=>{
+            return <Text key={key} style={styles.btntext}>{ing}</Text>
             })
          return map
         }
