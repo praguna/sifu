@@ -17,7 +17,7 @@ export function Status({ show }) {
       <Loader loading={true} />
     );
   else {
-    return <Text></Text>;
+    return null;
   }
 }
 
@@ -30,15 +30,10 @@ export class CameraComponent extends Component {
         userID : this.props.route.params.userID,
         hasPermission: null,
         type: Camera.Constants.Type.back,
-        show: false
+        show: false,
+        captureBtn: true
      }
   }
-
-  // state = {
-  //   hasPermission: null,
-  //   type: Camera.Constants.Type.back,
-  //   show: false,
-  // };
 
   async componentDidMount() {
     this.getPermissionAsync();
@@ -80,6 +75,7 @@ export class CameraComponent extends Component {
 
   //capture a picture
   takePicture = async () => {
+    this.setState({ captureBtn: false });
     if (this.camera) {
       await this.camera
         .takePictureAsync({ base64: true })
@@ -100,6 +96,7 @@ export class CameraComponent extends Component {
             .then((response) => response.json())
             .then((json) => {
               this.setState({ show: false });
+              this.setState({ captureBtn: true });
               // if(typeof data === "undefined")
               //   console.log("unreachable !!")
               this.props.navigation.push('UserFeedBack', {
@@ -128,6 +125,7 @@ export class CameraComponent extends Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
+          <Status show={this.state.show} />
           <Camera
             style={{ flex: 1 }}
             type={this.state.cameraType}
@@ -135,8 +133,6 @@ export class CameraComponent extends Component {
               this.camera = ref;
             }}
           >
-            <Status show={this.state.show} />
-
             <View
               style={{
                 flex: 1,
@@ -160,22 +156,39 @@ export class CameraComponent extends Component {
                   style={{ color: "#fff", fontSize: 40 }}
                 />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  alignSelf: "flex-end",
-                  alignItems: "center",
-                  backgroundColor: "transparent",
-                }}
-                onPress={() => {
-                  this.takePicture();
-                }}
-                title="send"
-              >
-                <FontAwesome
-                  name="camera"
-                  style={{ color: "#fff", fontSize: 40 }}
-                />
-              </TouchableOpacity>
+              {
+                this.state.captureBtn ? (<TouchableOpacity
+                  style={{
+                    alignSelf: "flex-end",
+                    alignItems: "center",
+                    backgroundColor: "transparent",
+                  }}
+                  onPress={() => {
+                    this.takePicture();
+                  }}
+                  title="send"
+                >
+                  <FontAwesome
+                    name="camera"
+                    style={{ color: "#fff", fontSize: 40 }}
+                  />
+                </TouchableOpacity>)
+                :
+                (<TouchableOpacity
+                  style={{
+                    alignSelf: "flex-end",
+                    alignItems: "center",
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  <Text
+                  style={{
+                    color: "white",
+                    fontSize: 20,
+                  }}> Captured </Text>
+                </TouchableOpacity>)
+
+              }   
               <TouchableOpacity
                 style={{
                   alignSelf: "flex-end",

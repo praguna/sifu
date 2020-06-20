@@ -53,8 +53,12 @@ export class LoginComponent extends Component {
                 var errorMessage = error.message;
                 flag = false;
                 ToastAndroid.show(errorMessage, ToastAndroid.SHORT)
+            }).then((result) => {
+                this.setState({
+                    loading:false
+                })
             })
-            .then(function (result) {
+            if(flag){
                 fetch(env.server+"registerUser?email="+email, {
                     method: "GET"
                 })
@@ -69,7 +73,7 @@ export class LoginComponent extends Component {
                         }
                     });
                 }).catch(err=>console.error(err));
-            })
+            }
     }
 
     render() {

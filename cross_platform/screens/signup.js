@@ -70,6 +70,9 @@ export class SignupComponent extends Component{
         try {
 
             if(this.state.password !== this.state.confirmpassword){
+                this.setState({
+                    loading:false
+                });
                 throw new Error("Confirm Password do not match");
             }
 
@@ -80,32 +83,37 @@ export class SignupComponent extends Component{
                 var errorMessage = error.message;
                 flag = false;
                 ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
-            }).then((result) => {});
-            
-            fetch(env.server+"registerUser", {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    "username": username,
-                    "email": email
-                }),
-            })
-            .then((response) => response.json())
-            .then((json) => {
-                AsyncStorage.setItem('username', username);
-                AsyncStorage.setItem('userID', json.userID);
-                console.log(json.message);
-            })
-            .catch((error) => console.log(error))
-            .then(function () {
-                if (flag) {
-                    navigation.dispatch(StackActions.replace('Landing'));
-                    ToastAndroid.show("Sign Up Success!", ToastAndroid.SHORT);
-                }
-            })
+            }).then((result) => {
+                this.setState({
+                    loading:false
+                });
+            });
+            if(flag){
+                fetch(env.server+"registerUser", {
+                    method: "POST",
+                    headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        "username": username,
+                        "email": email
+                    }),
+                })
+                .then((response) => response.json())
+                .then((json) => {
+                    AsyncStorage.setItem('username', username);
+                    AsyncStorage.setItem('userID', json.userID);
+                    console.log(json.message);
+                })
+                .catch((error) => console.log(error))
+                .then(function () {
+                    if (flag) {
+                        navigation.dispatch(StackActions.replace('Landing'));
+                        ToastAndroid.show("Sign Up Success!", ToastAndroid.SHORT);
+                    }
+                })
+            }
         } catch (error){
             ToastAndroid.show(error.message, ToastAndroid.SHORT);
         }
