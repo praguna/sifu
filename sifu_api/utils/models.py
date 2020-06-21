@@ -7,10 +7,9 @@ from keras.layers.pooling import GlobalAveragePooling2D
 from PIL import Image
 import numpy as np
 import os
+from silence_tensorflow import silence_tensorflow
+silence_tensorflow()
 import tensorflow as tf
-# import tensorflow.compat.v1 as tf
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-# tf.disable_v2_behavior()
 class Models():
     def __init__(self):
         self.shape = (1000,1000,3)

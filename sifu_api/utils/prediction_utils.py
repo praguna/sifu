@@ -64,6 +64,7 @@ def fetch_recipes():
     client = MongoClient(atlas_connection_string)
     db = client["food"]
     recipe_collection = db["south_Indian_recipes"]
+    client.close()
     return list(recipe_collection.find())
 
 def get_items(df,recipes,ingredients = None):
@@ -82,7 +83,6 @@ def get_items(df,recipes,ingredients = None):
     
 
 def get_filtered_items(recipes , ingredients):
-    # ingredients = ['chilli', 'lemon', 'potato','coconut']
     filtered_items = []
     for recipe in recipes:
         count = 0
@@ -109,9 +109,7 @@ def format_predictions(predictions, items, filtered_count=None):
         for k in new_dict:
             new_dict[k].sort(reverse = True, key = lambda x : x[0])
             result.extend(new_dict[k])
-        # print(new_dict)
-        # print("-------------------------")
-        print("Recommended : ",result)
+        # print("Recommended : ",result)
         return result
     predictions.sort(reverse=True, key = lambda x : x[0])
     return predictions

@@ -11,9 +11,9 @@ from utils.prediction_utils import *
 from utils.user_utils import *
 from utils.comment_api import *
 from utils.labelByUser_api import *
-# import tensorflow.compat.v1 as tf
+from silence_tensorflow import silence_tensorflow
+silence_tensorflow()
 import tensorflow as tf
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from utils.config import *
 import pandas as pd
 import numpy as np
@@ -173,7 +173,7 @@ class Application(Resource):
         query = self.createQuery(res)
         mdbResult = collection.find(query)
         for doc in mdbResult:
-            print(doc['Name'])
+            # print(doc['Name'])
             recipe = {}
             recipe['Name'] = doc['Name']
             recipe['Ingredients'] = doc['Ingredients']

@@ -1,5 +1,5 @@
 import unittest
-import app
+import application as app
 from PIL import Image
 import numpy as np
 import os

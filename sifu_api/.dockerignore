@@ -4,4 +4,7 @@ __pycache__
 *.pyo
 *.pyd
 .Python
+virt
+.elasticbeanstalk
 env
+test_image.jpg
