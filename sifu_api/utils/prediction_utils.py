@@ -57,7 +57,7 @@ def recognised_ingredients(pred):
     labels = sorted(Labels)
     result = []
     for i,x in enumerate(pred[0]):
-        if x >= 0.90: result.append(labels[i])
+        if x >= 0.70: result.append(labels[i])
     return result
 
 def fetch_recipes():

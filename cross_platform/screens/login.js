@@ -53,22 +53,25 @@ export class LoginComponent extends Component {
                 var errorMessage = error.message;
                 flag = false;
                 ToastAndroid.show(errorMessage, ToastAndroid.SHORT)
-            })
-            .then(function (result) {
-                fetch(env.server+"registerUser?email="+email, {
-                    method: "GET"
+            }).then((result) => {
+                this.setState({
+                    loading:false
                 })
-                .then((response) =>response.json())
-                .then((json) => {
-                    AsyncStorage.setItem('username', json.username);
-                    AsyncStorage.setItem('userID', json.userID).then((token) => {
-                        if (flag) {
-                            // navigation.navigate("Landing")
-                            navigation.dispatch(StackActions.replace('Landing'))
-                            // ToastAndroid.show("Login Success!", ToastAndroid.SHORT)
-                        }
-                    });
-                }).catch(err=>console.error(err));
+            }).then((result) => {
+                if(flag){
+                    fetch(env.server+"registerUser?email="+email, {
+                        method: "GET"
+                    })
+                    .then((response) =>response.json())
+                    .then((json) => {
+                        AsyncStorage.setItem('username', json.username);
+                        AsyncStorage.setItem('userID', json.userID).then((token) => {
+                            if (flag) {
+                                navigation.dispatch(StackActions.replace('Landing'))
+                            }
+                        });
+                    }).catch(err=>console.error(err));
+                }
             })
     }
 

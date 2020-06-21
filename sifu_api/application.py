@@ -96,6 +96,9 @@ def recommend(ingredients,user_id):
 
 class AllRecipes(Resource):
     def get(self):
+        global mongoClient
+        if not mongoClient:
+            mongoClient = pymongo.MongoClient(atlas_connection_string)
         db = mongoClient['food']
         collection = db['south_Indian_recipes']
         query = request.args.get("query")
@@ -158,8 +161,10 @@ class Application(Resource):
         return image
     
     def get_json_response(self,uid,pred=None):
+        global mongoClient
         res = recommend(pred, uid)[:self.max_recommend]
-        mongoClient = pymongo.MongoClient(atlas_connection_string)
+        if not mongoClient:
+            mongoClient = pymongo.MongoClient(atlas_connection_string)
         db = mongoClient['food']
         collection = db['south_Indian_recipes']
         response = {

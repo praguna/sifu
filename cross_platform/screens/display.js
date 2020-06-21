@@ -16,33 +16,29 @@ export class DisplayComponent extends Component{
     render(){
         if(this.state.recipes.length > 0){
         return (
-                <View style={StyleSheet.heading, styles.container}>
+            <ScrollView style={styles.container}>
+                <View style={StyleSheet.heading}>
                     <View style={styles.new_section}>
                         <View style={{flexDirection:"row", justifyContent:"space-evenly", marginBottom:20}}>
                             <Button title="Home" onPress={() => { this.props.navigation.dispatch(StackActions.replace('Landing'))}} />
                             {/* <Button title="Sign Out" onPress={this.handleSignout.bind(this, this.props.navigation)} /> */}
                         </View>
-                        <FlatList 
-                        ListHeaderComponent={
-                            <>
-                                <Text style ={{alignSelf:"center"}} > Recommended Recipes : </Text>
-                            </>} 
-                        data = {this.state.recipes} 
-                        renderItem = {({item})=><View>
-                            <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", alignSelf: "center" }} activeOpacity={.5} onPress={() => {
-                                    this.props.navigation.push('Recipe', {recipe: item})
-                                }}>
-                                    <View style={styles.listitems}>
-                                        <Text style={{marginTop:36}} >{item.Name}</Text>
-                                        <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={item.image} />
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
+                        <Text style ={{alignSelf:"center"}} > Recommended Recipes : </Text>
+                        {
+                            this.state.recipes.map((item, key) => (
+                                    <TouchableOpacity key={item.Name} style={{ margin:5, width:"100%", height:100, alignSelf: "center" }} activeOpacity={.5} onPress={() => {
+                                        this.props.navigation.push('Recipe', {recipe: item})
+                                    }}>
+                                        <View style={styles.listitems}>
+                                            <Text style={{marginTop:36}} >{item.Name}</Text>
+                                            <Image style={{ margin:10, height:70, width:70, borderRadius: 35 }} source={item.image} />
+                                        </View>
+                                    </TouchableOpacity>
+                            ))
                         }
-                        keyExtractor={item => item.Name}            
-                        />
                     </View>                    
                 </View>
+            </ScrollView>
         )
         } else{
             return (
